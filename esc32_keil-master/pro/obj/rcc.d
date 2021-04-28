@@ -1,0 +1,16 @@
+.\obj\rcc.o: ..\src\rcc.c
+.\obj\rcc.o: ..\src\rcc.h
+.\obj\rcc.o: ..\src\adc.h
+.\obj\rcc.o: ..\src\timer.h
+.\obj\rcc.o: ..\lib\stm32f10x_tim.h
+.\obj\rcc.o: ..\lib\stm32f10x.h
+.\obj\rcc.o: ..\src\core_cm3.h
+.\obj\rcc.o: F:\Keil4.70A\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\rcc.o: ..\lib\system_stm32f10x.h
+.\obj\rcc.o: ..\lib\stm32f10x_conf.h
+.\obj\rcc.o: ..\lib\stm32f10x_gpio.h
+.\obj\rcc.o: ..\lib\stm32f10x.h
+.\obj\rcc.o: ..\lib\stm32f10x_adc.h
+.\obj\rcc.o: ..\src\main.h
+.\obj\rcc.o: ..\src\digital.h
+.\obj\rcc.o: ..\lib\stm32f10x_rcc.h

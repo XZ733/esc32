@@ -1,0 +1,9 @@
+.\obj\stm32f10x_gpio.o: ..\lib\stm32f10x_gpio.c
+.\obj\stm32f10x_gpio.o: ..\lib\stm32f10x_gpio.h
+.\obj\stm32f10x_gpio.o: ..\lib\stm32f10x.h
+.\obj\stm32f10x_gpio.o: ..\src\core_cm3.h
+.\obj\stm32f10x_gpio.o: F:\Keil4.70A\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\stm32f10x_gpio.o: ..\lib\system_stm32f10x.h
+.\obj\stm32f10x_gpio.o: ..\lib\stm32f10x_conf.h
+.\obj\stm32f10x_gpio.o: ..\lib\stm32f10x_gpio.h
+.\obj\stm32f10x_gpio.o: ..\lib\stm32f10x_rcc.h

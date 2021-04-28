@@ -1,0 +1,10 @@
+.\obj\stm32f10x_usart.o: ..\lib\stm32f10x_usart.c
+.\obj\stm32f10x_usart.o: ..\lib\stm32f10x_usart.h
+.\obj\stm32f10x_usart.o: ..\lib\stm32f10x.h
+.\obj\stm32f10x_usart.o: ..\src\core_cm3.h
+.\obj\stm32f10x_usart.o: F:\Keil4.70A\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\stm32f10x_usart.o: ..\lib\system_stm32f10x.h
+.\obj\stm32f10x_usart.o: ..\lib\stm32f10x_conf.h
+.\obj\stm32f10x_usart.o: ..\lib\stm32f10x_gpio.h
+.\obj\stm32f10x_usart.o: ..\lib\stm32f10x.h
+.\obj\stm32f10x_usart.o: ..\lib\stm32f10x_rcc.h
