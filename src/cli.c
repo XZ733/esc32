@@ -157,9 +157,10 @@ static void cliFuncArm(void *cmd, char *cmdLine) {
 // 广播转速 gzs 0xffff 0xffff 0xffff 0xffff 0xffff 0xffff 0xffff 0xffff 0xff
 static void cliFuncGzs(void *cmd, char *cmdLine){
 	  uint16_t ReadIn[8];
-	  uint8_t  CheckDigit=0;
+	  uint8_t  CheckDigit = 0;
+	  uint8_t  TempCheck = 0;
 	  uint8_t *temp = cmdLine;
-	
+	  int i;
 	
 	  uint32_t ESC32_ID = p[CONFIG_NUM_PARAMS-1];
     uint8_t *S_Temp = cmdLine+3*ESC32_ID;
@@ -172,8 +173,12 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 		
 		ReadIn[ESC32_ID] = ((*(S_Temp))<<8)+ (*(S_Temp+1));
 		CheckDigit = *(temp+16);
+		for ( i=1;i<=16;i++)
+				TempCheck = TempCheck + *(temp + i - 1);
+		
+    TempCheck = TempCheck + 'g' + 'z' + 's';				
 	
-		  if(CheckDigit!=0x00)
+		  if(CheckDigit != TempCheck)
 		   {	
 			 serialPrint("Gzs CheckDigit ERROR \r\n");
 				 return;
@@ -197,20 +202,21 @@ static void cliFuncJzs(void *cmd, char *cmdLine){
 		uint32_t ReadIn=0;
 	  uint8_t  CheckDigit=0,ESC_ID=0;
 	  uint8_t *temp = cmdLine;
-	  
+	  uint8_t TempCheck = 0;
 	  if (state < ESC_STATE_RUNNING) {
 		serialPrint(runError);
 	}
 		else{
       ESC_ID = *temp;
 			CheckDigit = *(temp+4);
+			TempCheck = 'j'+'z'+'s'+ *(temp)+*(temp+1)+*(temp+2)+*(temp+3)+*(temp+4);
 			ReadIn=((*(temp+1))<<16)+((*(temp+2))<<8)+(*(temp+3));
 		  if(ESC_ID!= p[CONFIG_NUM_PARAMS-1])                          
 		   {	
 				serialPrint("JZS ID ERROR \r\n");
 			  return;
 		  }
-		  if(CheckDigit!=0x00)
+		  if(CheckDigit!=TempCheck)
 		   {	
 			 serialPrint("JZS CheckDigit ERROR \r\n");
 				 return;
