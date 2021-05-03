@@ -4,7 +4,7 @@
 .\obj\adc.o: ..\lib\stm32f10x_gpio.h
 .\obj\adc.o: ..\lib\stm32f10x.h
 .\obj\adc.o: ..\src\core_cm3.h
-.\obj\adc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\adc.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\adc.o: ..\lib\system_stm32f10x.h
 .\obj\adc.o: ..\lib\stm32f10x_conf.h
 .\obj\adc.o: ..\lib\stm32f10x_gpio.h

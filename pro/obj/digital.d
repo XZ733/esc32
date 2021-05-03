@@ -3,8 +3,8 @@
 .\obj\digital.o: ..\lib\stm32f10x_gpio.h
 .\obj\digital.o: ..\lib\stm32f10x.h
 .\obj\digital.o: ..\src\core_cm3.h
-.\obj\digital.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\digital.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\digital.o: ..\lib\system_stm32f10x.h
 .\obj\digital.o: ..\lib\stm32f10x_conf.h
 .\obj\digital.o: ..\lib\stm32f10x_gpio.h
-.\obj\digital.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\obj\digital.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdlib.h

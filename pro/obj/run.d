@@ -3,7 +3,7 @@
 .\obj\run.o: ..\src\misc.h
 .\obj\run.o: ..\lib\stm32f10x.h
 .\obj\run.o: ..\src\core_cm3.h
-.\obj\run.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\run.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\run.o: ..\lib\system_stm32f10x.h
 .\obj\run.o: ..\lib\stm32f10x_conf.h
 .\obj\run.o: ..\lib\stm32f10x_gpio.h
@@ -23,4 +23,4 @@
 .\obj\run.o: ..\lib\stm32f10x_pwr.h
 .\obj\run.o: ..\lib\stm32f10x_iwdg.h
 .\obj\run.o: ..\lib\stm32f10x_dbgmcu.h
-.\obj\run.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\obj\run.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\math.h

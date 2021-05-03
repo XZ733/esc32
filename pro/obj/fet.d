@@ -4,7 +4,7 @@
 .\obj\fet.o: ..\lib\stm32f10x_gpio.h
 .\obj\fet.o: ..\lib\stm32f10x.h
 .\obj\fet.o: ..\src\core_cm3.h
-.\obj\fet.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\fet.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\fet.o: ..\lib\system_stm32f10x.h
 .\obj\fet.o: ..\lib\stm32f10x_conf.h
 .\obj\fet.o: ..\lib\stm32f10x_gpio.h
@@ -18,4 +18,4 @@
 .\obj\fet.o: ..\src\config.h
 .\obj\fet.o: ..\lib\stm32f10x_dbgmcu.h
 .\obj\fet.o: ..\lib\stm32f10x_iwdg.h
-.\obj\fet.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\obj\fet.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\math.h

@@ -173,10 +173,8 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 		
 		ReadIn[ESC32_ID] = ((*(S_Temp))<<8)+ (*(S_Temp+1));
 		CheckDigit = *(temp+16);
-		for ( i=1;i<=16;i++)
-				TempCheck = TempCheck + *(temp + i - 1);
-		
-    TempCheck = TempCheck + 'g' + 'z' + 's';				
+		for ( i=1;i<=15;i++)
+				TempCheck = TempCheck + *(temp + i - 1);		
 	
 		  if(CheckDigit != TempCheck)
 		   {	
@@ -209,7 +207,7 @@ static void cliFuncJzs(void *cmd, char *cmdLine){
 		else{
       ESC_ID = *temp;
 			CheckDigit = *(temp+4);
-			TempCheck = 'j'+'z'+'s'+ *(temp)+*(temp+1)+*(temp+2)+*(temp+3)+*(temp+4);
+			TempCheck =  *(temp)+*(temp+1)+*(temp+2)+*(temp+3);
 			ReadIn=((*(temp+1))<<16)+((*(temp+2))<<8)+(*(temp+3));
 		  if(ESC_ID!= p[CONFIG_NUM_PARAMS-1])                          
 		   {	
@@ -218,7 +216,9 @@ static void cliFuncJzs(void *cmd, char *cmdLine){
 		  }
 		  if(CheckDigit!=TempCheck)
 		   {	
-			 serialPrint("JZS CheckDigit ERROR \r\n");
+				 sprintf(tempBuf, "JZS CheckDigit ERROR \r\n");
+			 serialPrint(tempBuf);
+			 
 				 return;
 		   }
 			 if (runMode != CLOSED_LOOP_RPM) {

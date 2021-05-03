@@ -5,7 +5,7 @@
 .\obj\rcc.o: ..\lib\stm32f10x_tim.h
 .\obj\rcc.o: ..\lib\stm32f10x.h
 .\obj\rcc.o: ..\src\core_cm3.h
-.\obj\rcc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\rcc.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\rcc.o: ..\lib\system_stm32f10x.h
 .\obj\rcc.o: ..\lib\stm32f10x_conf.h
 .\obj\rcc.o: ..\lib\stm32f10x_gpio.h

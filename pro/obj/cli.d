@@ -6,7 +6,7 @@
 .\obj\cli.o: ..\lib\stm32f10x_gpio.h
 .\obj\cli.o: ..\lib\stm32f10x.h
 .\obj\cli.o: ..\src\core_cm3.h
-.\obj\cli.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\cli.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\cli.o: ..\lib\system_stm32f10x.h
 .\obj\cli.o: ..\lib\stm32f10x_conf.h
 .\obj\cli.o: ..\lib\stm32f10x_gpio.h
@@ -22,7 +22,7 @@
 .\obj\cli.o: ..\src\pwm.h
 .\obj\cli.o: ..\src\config.h
 .\obj\cli.o: ..\src\rcc.h
-.\obj\cli.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\obj\cli.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\obj\cli.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\obj\cli.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\obj\cli.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\cli.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\stdlib.h
+.\obj\cli.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\string.h
+.\obj\cli.o: D:\software\Stm32CubeMx\Keil\Core\ARM\ARMCC\Bin\..\include\math.h
