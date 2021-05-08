@@ -1,5 +1,0 @@
--c --cpu Cortex-M3 -g -O0 -Otime --apcs=interwork --split_sections -I..\src -I..\lib --gnu 
--I F:\Keil4.70A\ARM\RV31\INC 
--I F:\Keil4.70A\ARM\CMSIS\Include 
--I F:\Keil4.70A\ARM\Inc\ST\STM32F10x 
--DSTM32F10X_MD -o ".\obj\ow.o" --omf_browse ".\obj\ow.crf" --depend ".\obj\ow.d" "..\src\ow.c"
