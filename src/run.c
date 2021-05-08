@@ -561,10 +561,10 @@ void SysTick_Handler(void) {
 
 
 	//处理串口数据 和串口交互使用的
-    //if (commandMode == CLI_MODE)
+    if (commandMode == CLI_MODE)
 		cliCheck();    //ascii模式
-    //else
-		//binaryCheck(); //二进制模式
+    else
+		binaryCheck(); //二进制模式
 
     runMilis++;
 }

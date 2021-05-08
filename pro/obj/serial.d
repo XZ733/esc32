@@ -1,0 +1,15 @@
+.\obj\serial.o: ..\src\serial.c
+.\obj\serial.o: ..\src\serial.h
+.\obj\serial.o: ..\lib\stm32f10x_usart.h
+.\obj\serial.o: ..\lib\stm32f10x.h
+.\obj\serial.o: ..\src\core_cm3.h
+.\obj\serial.o: F:\Keil4.70A\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\serial.o: ..\lib\system_stm32f10x.h
+.\obj\serial.o: ..\lib\stm32f10x_conf.h
+.\obj\serial.o: ..\lib\stm32f10x_gpio.h
+.\obj\serial.o: ..\lib\stm32f10x.h
+.\obj\serial.o: ..\src\config.h
+.\obj\serial.o: ..\lib\stm32f10x_dma.h
+.\obj\serial.o: ..\src\misc.h
+.\obj\serial.o: F:\Keil4.70A\ARM\ARMCC\bin\..\include\stdio.h
+.\obj\serial.o: F:\Keil4.70A\ARM\ARMCC\bin\..\include\stdlib.h

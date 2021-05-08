@@ -1,0 +1,11 @@
+.\obj\timer.o: ..\src\timer.c
+.\obj\timer.o: ..\src\timer.h
+.\obj\timer.o: ..\lib\stm32f10x_tim.h
+.\obj\timer.o: ..\lib\stm32f10x.h
+.\obj\timer.o: ..\src\core_cm3.h
+.\obj\timer.o: F:\Keil4.70A\ARM\ARMCC\bin\..\include\stdint.h
+.\obj\timer.o: ..\lib\system_stm32f10x.h
+.\obj\timer.o: ..\lib\stm32f10x_conf.h
+.\obj\timer.o: ..\lib\stm32f10x_gpio.h
+.\obj\timer.o: ..\lib\stm32f10x.h
+.\obj\timer.o: ..\src\misc.h

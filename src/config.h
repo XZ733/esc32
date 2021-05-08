@@ -19,18 +19,14 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-
-
-
-
 #define DEFAULT_CONFIG_VERSION		1.503f
 #define DEFAULT_STARTUP_MODE		0.0f
 //#define DEFAULT_BAUD_RATE		230400
 #define DEFAULT_BAUD_RATE		115200
 
 #define DEFAULT_PTERM			0.25f
-#define DEFAULT_PNFAC			10.0f         
-#define DEFAULT_ITERM			0.0006f    
+#define DEFAULT_PNFAC			10.0f
+#define DEFAULT_ITERM			0.0006f
 #define DEFAULT_INFAC			0.15f
 
 #define DEFAULT_FF1TERM			0.0f
@@ -50,7 +46,7 @@
 #define DEFAULT_MAX_PERIOD		12000.0f    // us
 #define DEFAULT_BLANKING_MICROS		30.0f	    // us
 #define DEFAULT_ADVANCE			10.0f	    // electrical degrees
-#define DEFAULT_START_VOLTAGE		2.1f	    // voltage used to start motor
+#define DEFAULT_START_VOLTAGE		1.1f	    // voltage used to start motor
 #define DEFAULT_START_ALIGN_TIME	600	    // ms to align rotor in known position
 #define DEFAULT_START_ALIGN_VOLTAGE	0.9f	    // max voltage during align (around 0.8 * START_VOLTAGE)
 #define DEFAULT_START_STEPS_NUM		0.0f	    // steps without commutation
@@ -58,9 +54,9 @@
 #define DEFAULT_START_STEPS_ACCEL	0.0f	    // us each following step will be shorter (acceleration)
 #define DEFAULT_GOOD_DETECTS_START	75.0f	    // after which will go into RUNNING mode
 #define DEFAULT_BAD_DETECTS_DISARM	48.0f	    // after which will go into DISARMED mode
-#define DEFAULT_MAX_CURRENT		75.0f	    // amps
+#define DEFAULT_MAX_CURRENT		20.0f	    // amps
 #define DEFAULT_SWITCH_FREQ		20.0f	    // output PWM frequency in KHz
-#define DEFAULT_MOTOR_POLES		28.0f
+#define DEFAULT_MOTOR_POLES		14.0f
 
 #define DEFAULT_PWM_MIN_PERIOD		2200	    // minimum valid period
 #define DEFAULT_PWM_MAX_PERIOD		25000	    // maximum valid period
@@ -83,13 +79,6 @@
 #define DEFAULT_SERVO_D			0.0f
 #define DEFAULT_SERVO_MAX_RATE		1000.0f	    // deg/s
 #define DEFAULT_SERVO_SCALE		360.0f	    // deg
-
-
-
-/************************************************/
-#define DEFAULT_ID 0
-/************************************************/
-
 
 #define FLASH_PAGE_SIZE			((uint16_t)0x400)
 #define FLASH_WRITE_ADDR		(0x08000000 + (uint32_t)FLASH_PAGE_SIZE * 63)    // use the last KB for storage 配置参数保存地址
@@ -148,12 +137,8 @@ enum configParameters {
     SERVO_D,
     SERVO_MAX_RATE,
     SERVO_SCALE,
-		
-		ID,
-		
     CONFIG_NUM_PARAMS
 };
-
 
 extern float p[CONFIG_NUM_PARAMS];
 extern const char *configParameterStrings[];
@@ -167,7 +152,5 @@ extern float configGetParam(char *param);
 extern void configLoadDefault(void);
 extern void configReadFlash(void);
 extern int configWriteFlash(void);
-extern float configReadID(void);
-
 
 #endif

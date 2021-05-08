@@ -39,7 +39,7 @@
 #define ADC_TO_VOLTAGE		(ADC_REF_VOLTAGE / (1<<12)) // 12 bit ADC resolution
 
 #define ADC_AMPS_PRECISION	16
-#define ADC_SHUNT_GAIN		499.0f
+#define ADC_SHUNT_GAIN		50.9f
 
 #define ADC_VOLTS_PRECISION	16
 #define ADC_VOLTS_SLOPE		((10.0f + 1.5f) / 1.5f)    // Rtop = 10K, Rbot = 1.5K

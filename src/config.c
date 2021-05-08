@@ -77,8 +77,7 @@ const char *configParameterStrings[] = {
     "SERVO_P",             //伺服模式下 PID计算 P参数
     "SERVO_D",             //伺服模式下 PID计算 D参数
     "SERVO_MAX_RATE",
-    "SERVO_SCALE",
-		"ID"
+    "SERVO_SCALE"
 };
 
 const char *configFormatStrings[] = {
@@ -129,18 +128,16 @@ const char *configFormatStrings[] = {
     "%.3f",	    // SERVO_P
     "%.3f",	    // SERVO_D
     "%.1f deg/s",   // SERVO_MAX_RATE
-    "%.1f deg",	    // SERVO_SCALE
-		
-		"%.0f"     // ID
+    "%.1f deg"	    // SERVO_SCALE
 };
 
 void configInit(void) {
     float ver;
 
-    configLoadDefault();                //default num load in p
+    configLoadDefault();
 
 	//从这个地址读取出版本号
-    ver = *(float *)FLASH_WRITE_ADDR;   //read old ver
+    ver = *(float *)FLASH_WRITE_ADDR;
 
     if (isnan(ver))//判断ver  如果ver为非负数(NAN，值为0xffffffff)，返回1，否则返回0 
 		configWriteFlash();//配置写入flash
@@ -272,14 +269,8 @@ void configLoadDefault(void) {
     p[SERVO_MAX_RATE] = DEFAULT_SERVO_MAX_RATE;
     p[SERVO_SCALE] = DEFAULT_SERVO_SCALE;
 
-   p[ID] = DEFAULT_ID;
-
     configRecalcConst();
 }
-
-
-
-
 
 //将配置文件写入flash
 int configWriteFlash(void) 
@@ -328,19 +319,9 @@ int configWriteFlash(void)
     return ret;
 }
 
-
-
-
 //读取flash上的参数到内存中
 void configReadFlash(void) {
     memcpy(p, (char *)FLASH_WRITE_ADDR, sizeof(p));
 
     configRecalcConst();
 }
-
-
-
-
-
-
-
