@@ -31,8 +31,8 @@ float p[CONFIG_NUM_PARAMS];
 
 const char *configParameterStrings[] = {
     "CONFIG_VERSION",
-    "STARTUP_MODE",         //Æô¶¯Ä£Ê½ (ËÅ·þÄ£Ê½ .....)
-    "BAUD_RATE",            //´®¿Ú²¨ÌØÂÊ
+    "STARTUP_MODE",         //ï¿½ï¿½ï¿½ï¿½Ä£Ê½ (ï¿½Å·ï¿½Ä£Ê½ .....)
+    "BAUD_RATE",            //ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½
     "PTERM",
     "ITERM",
     "FF1TERM",
@@ -61,7 +61,7 @@ const char *configParameterStrings[] = {
     "PWM_MAX_VALUE",
     "PWM_MIN_START",
     "PWM_RPM_SCALE",
-    "FET_BRAKING",          //ÔÊÐíÖÆ¶¯Ä£Ê½
+    "FET_BRAKING",          //ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ä£Ê½
     "PNFAC",
     "INFAC",
     "THR1TERM",
@@ -74,11 +74,11 @@ const char *configParameterStrings[] = {
     "PWM_LOWPASS",
     "RPM_MEAS_LP",
     "SERVO_DUTY",
-    "SERVO_P",             //ËÅ·þÄ£Ê½ÏÂ PID¼ÆËã P²ÎÊý
-    "SERVO_D",             //ËÅ·þÄ£Ê½ÏÂ PID¼ÆËã D²ÎÊý
+    "SERVO_P",             //ï¿½Å·ï¿½Ä£Ê½ï¿½ï¿½ PIDï¿½ï¿½ï¿½ï¿½ Pï¿½ï¿½ï¿½ï¿½
+    "SERVO_D",             //ï¿½Å·ï¿½Ä£Ê½ï¿½ï¿½ PIDï¿½ï¿½ï¿½ï¿½ Dï¿½ï¿½ï¿½ï¿½
     "SERVO_MAX_RATE",
     "SERVO_SCALE",
-		"ID"
+    "ID"
 };
 
 const char *configFormatStrings[] = {
@@ -130,8 +130,7 @@ const char *configFormatStrings[] = {
     "%.3f",	    // SERVO_D
     "%.1f deg/s",   // SERVO_MAX_RATE
     "%.1f deg",	    // SERVO_SCALE
-		
-		"%.0f"     // ID
+    "%.0f"     // ID
 };
 
 void configInit(void) {
@@ -139,11 +138,11 @@ void configInit(void) {
 
     configLoadDefault();                //default num load in p
 
-	//´ÓÕâ¸öµØÖ·¶ÁÈ¡³ö°æ±¾ºÅ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½È¡ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½
     ver = *(float *)FLASH_WRITE_ADDR;   //read old ver
 
-    if (isnan(ver))//ÅÐ¶Ïver  Èç¹ûverÎª·Ç¸ºÊý(NAN£¬ÖµÎª0xffffffff)£¬·µ»Ø1£¬·ñÔò·µ»Ø0 
-		configWriteFlash();//ÅäÖÃÐ´Èëflash
+    if (isnan(ver))//ï¿½Ð¶ï¿½ver  ï¿½ï¿½ï¿½verÎªï¿½Ç¸ï¿½ï¿½ï¿½(NANï¿½ï¿½ÖµÎª0xffffffff)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»ï¿½0 
+		configWriteFlash();//ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½flash
     else if (ver >= p[CONFIG_VERSION])
 		configReadFlash();
     else if (p[CONFIG_VERSION] > ver)
@@ -151,7 +150,7 @@ void configInit(void) {
 }
 
 // recalculate constants with bounds checking
-//×ö²ÎÊý±ß½çµÄ¼ì²é
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½Ä¼ï¿½ï¿½
 static void configRecalcConst(void) {
     adcSetConstants();
     fetSetConstants();
@@ -160,7 +159,7 @@ static void configRecalcConst(void) {
     serialSetConstants();
 }
 
-//¸ù¾Ý´«µÝÊý×éindex,ÉèÖÃ²ÎÊýÖµ
+//ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½index,ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½Öµ
 int configSetParamByID(int i, float value) {
     int ret = 0;
 
@@ -174,7 +173,7 @@ int configSetParamByID(int i, float value) {
     return ret;
 }
 
-//¸ù¾Ý×Ö·û´®parm,ÉèÖÃ²ÎÊývalue
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½parm,ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½value
 int configSetParam(char *param, float value) {
     int ret = 0;
     int i;
@@ -190,18 +189,18 @@ int configSetParam(char *param, float value) {
     return ret;
 }
 
-//¸ù¾Ý²ÎÊýparam(×Ö·û´®).»ñÈ¡²ÎÊýµÄÊý×éindex
+//ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½param(ï¿½Ö·ï¿½ï¿½ï¿½).ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½index
 int configGetId(char *param) {
 	int i;
 
 	for (i = 0; i < CONFIG_NUM_PARAMS; i++)
-		if (!strncasecmp(configParameterStrings[i], param, strlen(configParameterStrings[i])))//×Ö·û´®±È½Ï,±È½Ï³É¹¦·µ»ØÊý×éindex
+		if (!strncasecmp(configParameterStrings[i], param, strlen(configParameterStrings[i])))//ï¿½Ö·ï¿½ï¿½ï¿½ï¿½È½ï¿½,ï¿½È½Ï³É¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½index
 			return i;
 
 	return -1;
 }
 
-#if 0//Õâ¸öº¯ÊýÃ»ÓÐµ÷ÓÃ
+#if 0//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ðµï¿½ï¿½ï¿½
 float configGetParam(char *param) {
     int i;
 
@@ -211,14 +210,14 @@ float configGetParam(char *param) {
 	return p[i];
     else
 	//return __float32_nan;
-	return NAN;//AXian ÕÒ²»µ½__float32_nanÕâ¸ö±äÁ¿.ÏÈÕâÃ´¶¨ÒåÁË
+	return NAN;//AXian ï¿½Ò²ï¿½ï¿½ï¿½__float32_nanï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 #endif
 
 void configLoadDefault(void) {
-    p[CONFIG_VERSION] = DEFAULT_CONFIG_VERSION;          //±¾ÅäÖÃ±íµÄ°æ±¾
-    p[STARTUP_MODE] = DEFAULT_STARTUP_MODE;              //Æô¶¯Ä£Ê½(ËÅ·þÄ£Ê½ ....)
-    p[BAUD_RATE] = DEFAULT_BAUD_RATE;                    //´®¿ÚÄ¬ÈÏ²¨ÌØÂÊ
+    p[CONFIG_VERSION] = DEFAULT_CONFIG_VERSION;          //ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ï¿½Ä°æ±¾
+    p[STARTUP_MODE] = DEFAULT_STARTUP_MODE;              //ï¿½ï¿½ï¿½ï¿½Ä£Ê½(ï¿½Å·ï¿½Ä£Ê½ ....)
+    p[BAUD_RATE] = DEFAULT_BAUD_RATE;                    //ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	p[PTERM] = DEFAULT_PTERM;
     p[ITERM] = DEFAULT_ITERM;
@@ -242,16 +241,16 @@ void configLoadDefault(void) {
     p[SWITCH_FREQ] = DEFAULT_SWITCH_FREQ;
     p[MOTOR_POLES] = DEFAULT_MOTOR_POLES;
 
-	p[PWM_MIN_PERIOD] = DEFAULT_PWM_MIN_PERIOD;           //PWM timer1 ch1 ÊäÈëÄ£Ê½,×îÐ¡µÄÖÜÆÚ
-    p[PWM_MAX_PERIOD] = DEFAULT_PWM_MAX_PERIOD;           //PWM timer1 ch1 ÊäÈëÄ£Ê½,×î´óµÄÖÜÆÚ
-    p[PWM_MIN_VALUE] = DEFAULT_PWM_MIN_VALUE;             //PWM timer1 ch2 ÊäÈëÄ£Ê½,×îÐ¡µÄÖÜÆÚ
+	p[PWM_MIN_PERIOD] = DEFAULT_PWM_MIN_PERIOD;           //PWM timer1 ch1 ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    p[PWM_MAX_PERIOD] = DEFAULT_PWM_MAX_PERIOD;           //PWM timer1 ch1 ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    p[PWM_MIN_VALUE] = DEFAULT_PWM_MIN_VALUE;             //PWM timer1 ch2 ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     p[PWM_LO_VALUE] = DEFAULT_PWM_LO_VALUE;
     p[PWM_HI_VALUE] = DEFAULT_PWM_HI_VALUE;
-    p[PWM_MAX_VALUE] = DEFAULT_PWM_MAX_VALUE;             //PWM timer1 ch2 ÊäÈëÄ£Ê½,×î´óµÄÖÜÆÚ\
+    p[PWM_MAX_VALUE] = DEFAULT_PWM_MAX_VALUE;             //PWM timer1 ch2 ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\
 
     p[PWM_MIN_START] = DEFAULT_PWM_MIN_START;
     p[PWM_RPM_SCALE] = DEFAULT_PWM_RPM_SCALE;
-    p[FET_BRAKING] = DEFAULT_FET_BRAKING;                 //=1 ¿ªÆôÔÊÐíÖÆ¶¯Ä£Ê½, =0 ²»ÔÊÐíÖÆ¶¯
+    p[FET_BRAKING] = DEFAULT_FET_BRAKING;                 //=1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ä£Ê½, =0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
     p[PNFAC] = DEFAULT_PNFAC;
     p[INFAC] = DEFAULT_INFAC;
     p[THR1TERM] = DEFAULT_THR1TERM;
@@ -267,21 +266,17 @@ void configLoadDefault(void) {
     p[RPM_MEAS_LP] = DEFAULT_RPM_MEAS_LP;
 
 	p[SERVO_DUTY] = DEFAULT_SERVO_DUTY;
-    p[SERVO_P] = DEFAULT_SERVO_P;                         //ËÅ·þÄ£Ê½ÏÂ PID¼ÆËã P²ÎÊý
-    p[SERVO_D] = DEFAULT_SERVO_D;                         //ËÅ·þÄ£Ê½ÏÂ PID¼ÆËã D²ÎÊý
+    p[SERVO_P] = DEFAULT_SERVO_P;                         //ï¿½Å·ï¿½Ä£Ê½ï¿½ï¿½ PIDï¿½ï¿½ï¿½ï¿½ Pï¿½ï¿½ï¿½ï¿½
+    p[SERVO_D] = DEFAULT_SERVO_D;                         //ï¿½Å·ï¿½Ä£Ê½ï¿½ï¿½ PIDï¿½ï¿½ï¿½ï¿½ Dï¿½ï¿½ï¿½ï¿½
     p[SERVO_MAX_RATE] = DEFAULT_SERVO_MAX_RATE;
     p[SERVO_SCALE] = DEFAULT_SERVO_SCALE;
 
-   p[ID] = DEFAULT_ID;
+    p[ID] = DEFAULT_ID;
 
     configRecalcConst();
 }
 
-
-
-
-
-//½«ÅäÖÃÎÄ¼þÐ´Èëflash
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ð´ï¿½ï¿½flash
 int configWriteFlash(void) 
 {
     uint16_t prevReloadVal;
@@ -328,19 +323,9 @@ int configWriteFlash(void)
     return ret;
 }
 
-
-
-
-//¶ÁÈ¡flashÉÏµÄ²ÎÊýµ½ÄÚ´æÖÐ
+//ï¿½ï¿½È¡flashï¿½ÏµÄ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½
 void configReadFlash(void) {
     memcpy(p, (char *)FLASH_WRITE_ADDR, sizeof(p));
 
     configRecalcConst();
 }
-
-
-
-
-
-
-

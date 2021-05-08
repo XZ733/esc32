@@ -29,8 +29,6 @@ typedef struct {
     void (*cmdFunc)(void *cmd, char *cmdLine);
 } cliCommand_t;
 
-
-
 extern char version[16];
 
 extern void cliInit(void);

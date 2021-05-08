@@ -19,18 +19,14 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
-
-
-
-
 #define DEFAULT_CONFIG_VERSION		1.503f
 #define DEFAULT_STARTUP_MODE		0.0f
 //#define DEFAULT_BAUD_RATE		230400
 #define DEFAULT_BAUD_RATE		115200
 
 #define DEFAULT_PTERM			0.25f
-#define DEFAULT_PNFAC			10.0f         
-#define DEFAULT_ITERM			0.0006f    
+#define DEFAULT_PNFAC			10.0f
+#define DEFAULT_ITERM			0.0006f
 #define DEFAULT_INFAC			0.15f
 
 #define DEFAULT_FF1TERM			0.0f
@@ -84,12 +80,7 @@
 #define DEFAULT_SERVO_MAX_RATE		1000.0f	    // deg/s
 #define DEFAULT_SERVO_SCALE		360.0f	    // deg
 
-
-
-/************************************************/
 #define DEFAULT_ID 0
-/************************************************/
-
 
 #define FLASH_PAGE_SIZE			((uint16_t)0x400)
 #define FLASH_WRITE_ADDR		(0x08000000 + (uint32_t)FLASH_PAGE_SIZE * 63)    // use the last KB for storage 配置参数保存地址
@@ -148,12 +139,9 @@ enum configParameters {
     SERVO_D,
     SERVO_MAX_RATE,
     SERVO_SCALE,
-		
-		ID,
-		
+    ID,
     CONFIG_NUM_PARAMS
 };
-
 
 extern float p[CONFIG_NUM_PARAMS];
 extern const char *configParameterStrings[];
@@ -168,6 +156,5 @@ extern void configLoadDefault(void);
 extern void configReadFlash(void);
 extern int configWriteFlash(void);
 extern float configReadID(void);
-
 
 #endif
