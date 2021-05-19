@@ -173,36 +173,32 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 	}
 }
 	
-//解析转速     jzs 0xff 0xffffff 0xff
+//解析转速     jzs 0 123 0 
 static void cliFuncJzs(void *cmd, char *cmdLine){
     uint32_t ReadIn=0;
     uint8_t  CheckDigit=0, ESC_ID=0;
     uint8_t *temp = cmdLine;
-    uint8_t TempCheck = 0;
+    uint32_t MapNum = 0;
+	  
     if (state < ESC_STATE_RUNNING) {
         serialPrint(runError);
     }
     else{
-        ESC_ID = *temp;
-        CheckDigit = *(temp+4);
-        TempCheck =  *(temp)+*(temp+1)+*(temp+2)+*(temp+3);
-        ReadIn=((*(temp+1))<<16)+((*(temp+2))<<8)+(*(temp+3));
-        if(ESC_ID!= p[CONFIG_NUM_PARAMS-1]){
+        ESC_ID = (*temp)-0x30;
+        CheckDigit = *(temp+4)-0x30;
+        ReadIn = (*(temp+1)-0x30)*100 + (*(temp+2)-0x30)*10 + (*(temp+3)-0x30);  
+        if(ESC_ID != p[CONFIG_NUM_PARAMS-1]){
             serialPrint("JZS ID ERROR \r\n");
             return;
         }
-        if(CheckDigit!=TempCheck){
+        if(CheckDigit != 0){
             sprintf(tempBuf, "JZS CheckDigit ERROR \r\n");
             serialPrint(tempBuf);
             return;
         }
-			 if (runMode != CLOSED_LOOP_RPM) {
-				runRpmPIDReset();
-				runMode = CLOSED_LOOP_RPM;
-			}
-		   targetRpm = (ReadIn/16777215.0)*5000;//设置目标转速
-			
-			 sprintf(tempBuf, "RPM set to %f \r\n", targetRpm);
+				fetSetDutyCycle((uint16_t)ReadIn);
+				
+			 sprintf(tempBuf, "set to %f \r\n", ReadIn);
 			 serialPrint(tempBuf);
 	
 		}  
