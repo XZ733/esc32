@@ -25,7 +25,7 @@
 #define TIMER_IRQ_CH	    TIM2_IRQn
 #define TIMER_ISR	    TIM2_IRQHandler
 #define TIMER_MULT	    2//4		    // 0.5 us resolution
-#define TIMER_MASK	    0xFFFFFFFF	    // for testing timer roll-over
+#define TIMER_MASK	    0xFFFFFFFF	    // for testing timer roll-over 定时器归零
 
 typedef void timerCallback_t(int);
 

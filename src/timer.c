@@ -94,7 +94,7 @@ void timerInit(void)
     NVIC_Init(&NVIC_InitStructure);
 
     // Time base configuration
-    TIM_TimeBaseStructure.TIM_Prescaler = (72/TIMER_MULT) - 1;   //分频
+    TIM_TimeBaseStructure.TIM_Prescaler = (72/TIMER_MULT) - 1;   //分频 36-1
     TIM_TimeBaseStructure.TIM_Period = 0xFFFF;                   //自动重载寄存器
     TIM_TimeBaseStructure.TIM_ClockDivision = 0;                 //分频
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;  //向上计数

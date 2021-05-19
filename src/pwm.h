@@ -36,8 +36,8 @@
 #define PWM_CLK_DIVISOR	    72
 
 #define PWM_TIMEOUT	    (200000*TIMER_MULT)	    // micros that the last received PWM signal is valid for (0.2 seconds)
-
-#define	PWM_RPM_SCALE_MIN   1000.0f
+                                                //PWM接收的时间分辨率
+#define	PWM_RPM_SCALE_MIN   1000.0f             //PWM范围
 #define	PWM_RPM_SCALE_MAX   20000.0f
 
 extern int16_t pwmMinPeriod;
