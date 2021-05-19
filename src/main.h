@@ -22,6 +22,7 @@
 #define VERSION			"1.5.0"
 
 #include "digital.h"
+#include "watchdog.h"
 
 #define ESC_DEBUG				// uncomment to include debugging code
 
@@ -62,6 +63,7 @@ enum escDisarmReasons {
 };
 
 extern digitalPin *errorLed, *statusLed, *tp;
+extern WatchDogPin *FeedPin;
 extern volatile uint32_t minCycles, idleCounter, totalCycles;
 extern volatile uint8_t state, inputMode;
 

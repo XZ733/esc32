@@ -27,8 +27,10 @@
 #include "run.h"
 #include "cli.h"
 #include "ow.h"
+#include "watchdog.h"
 
 digitalPin *errorLed, *statusLed;
+WatchDogPin *FeedPin;
 #ifdef ESC_DEBUG
 digitalPin *tp;
 #endif
@@ -45,6 +47,8 @@ int main(void)
 
 	statusLed = digitalInit(GPIO_STATUS_LED_PORT, GPIO_STATUS_LED_PIN);
 	errorLed = digitalInit(GPIO_ERROR_LED_PORT, GPIO_ERROR_LED_PIN);
+	FeedPin = WatchDogPinInit(GPIO_FEED_DOG_PORT,GPIO_FEED_DOG_PIN);
+	
 #ifdef ESC_DEBUG
 	tp = digitalInit(GPIO_TP_PORT, GPIO_TP_PIN);
 	digitalLo(tp);
@@ -77,6 +81,8 @@ int main(void)
 	//LED≥ı ºªØ
 	digitalHi(statusLed);
 	digitalHi(errorLed);
+	
+	digitalHi(FeedPin);
 
 	// self calibrating idle timer loop
 	{
@@ -105,6 +111,7 @@ int main(void)
 			totalCycles += cycles;
 			if (cycles < minCycles)
 				minCycles = cycles;
+			
 		}
 	}
 }

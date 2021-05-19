@@ -31,6 +31,7 @@
 #include "stm32f10x_iwdg.h"
 #include "stm32f10x_dbgmcu.h"
 #include <math.h>
+#include "watchdog.h"
 
 uint32_t runMilis;   //systick中断中自加.没有什么控制用途
 static uint32_t oldIdleCounter;  //上次main函数中,死循环次数.
@@ -49,6 +50,8 @@ uint8_t commandMode; //串口通讯的模式, cli是ascii模式, binary是二进
 static uint8_t runArmCount;
 volatile uint8_t runMode;//运行模式 (开环模式, RPM模式, 推力模式, 伺服模式)
 static float maxThrust;
+
+int ExternDogCount = 0;
 
 //执行看门狗喂狗
 void runFeedIWDG(void) {
@@ -174,6 +177,11 @@ uint8_t runDuty(float duty) {
 		runMode = OPEN_LOOP;
 		fetSetBraking(0);
 		fetSetDutyCycle((uint16_t)(fetPeriod*duty*0.01f));//最大周期 * 占空比(0~100) / 100
+			                                                //fetPeriod = FET_AHB_FREQ/fetSwitchFreq 
+			                                                //FET_AHB_FREQ = 36M
+			                                                //fetSwitchFreq = switchFreq * 1000 * 2
+			                                                //switchFreq = 20    4~64
+			
 		ret = 1;
     }
 
@@ -534,6 +542,12 @@ void SysTick_Handler(void) {
     // reload the hardware watchdog
     runFeedIWDG();
 
+	  ExternDogCount++;
+	  if(ExternDogCount == 10)
+		{
+			ExternDogCount = 0;
+			WatchDogFeed(FeedPin);
+		}
 
     avgVolts = adcAvgVolts * ADC_TO_VOLTS;                     //转换后的电池电压(一般是12V) = ADC采集电压原始值 * 电压算法
     avgAmps = (adcAvgAmps - adcAmpsOffset) * adcToAmps;        //平均电流 = (当前电流 - 停止时候的电流) * 转换公式
