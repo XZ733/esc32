@@ -137,45 +137,39 @@ static void cliFuncArm(void *cmd, char *cmdLine) {
 		serialPrint("ESC armed\r\n");
 	}
 }
-// 广播转速 gzs 123 123 123 123 123 123 123 123 00
+// 广播转速 gzs 0xffff 0xffff 0xffff 0xffff 0xffff 0xffff 0xffff 0xffff 0xff
 static void cliFuncGzs(void *cmd, char *cmdLine){
-		uint16_t ReadIn[8];                         //转速数组
-		char *temp = cmdLine;                         
+    uint16_t ReadIn[8];
+    uint8_t  CheckDigit = 0;
+    uint8_t  TempCheck = 0;
+    uint8_t *temp = cmdLine;
 
-		uint32_t ESC32_ID = p[ID];                  //电调ID
-	
-		char *S_Temp = cmdLine + 3 * ESC32_ID;      //转速指针
-		char *J_Temp = cmdLine + 24;                //校验指针
-		char LRC_H_R = *J_Temp;                  //高位校验指针
-		char LRC_L_R = *(J_Temp+1);              //低位校验指针
-	
-		uint8_t LRC = 0;                            //LRC运算
-		uint8_t LRC_H_C = 0;
-		uint8_t LRC_L_C = 0;
+    uint32_t ESC32_ID = p[ID];
+    uint8_t *S_Temp = cmdLine + 3 * ESC32_ID;
 
-		if (state < ESC_STATE_RUNNING) {
+    if (state < ESC_STATE_RUNNING) {
         serialPrint(runError);
-		}
-		else{
-			ReadIn[ESC32_ID] = (*(S_Temp)-0x30)*100 + (*(S_Temp+1)-0x30)*10 + (*(S_Temp+2)-0x30);  
-		
-			uint8_t i;
-			for(i = 0; i < 27; i++) LRC += (*(temp+i));
-			LRC_H_C = LRC / 16 + '0';
-			if(LRC_H_C > '9') LRC_H_C = (LRC_H_C - '9' + 'a' - 1);
-			LRC_L_C = LRC % 16 + '0';
-			if(LRC_L_C > '9') LRC_L_C = (LRC_L_C - '9' + 'a' - 1);
-			
-   
-			if(LRC_H_C != LRC_H_R || LRC_L_C != LRC_L_R)
-				{
-					serialPrint("Jzs CheckDigit ERROR \r\n");
-					return;
-				}
-			fetSetDutyCycle((uint16_t)ReadIn[ESC32_ID]);
-				
-			sprintf(tempBuf, "set to %d \r\n", ReadIn[ESC32_ID]);
-			serialPrint(tempBuf);
+    }
+	else{
+		ReadIn[ESC32_ID] = ((*(S_Temp)) << 8) + (*(S_Temp + 1));
+		CheckDigit = *(temp + 16);
+
+        int i;
+		for (i = 1; i <= 15; i++) TempCheck = TempCheck + *(temp + i - 1);
+
+        if(CheckDigit != TempCheck)
+        {
+            serialPrint("Gzs CheckDigit ERROR \r\n");
+            return;
+        }
+        if (runMode != CLOSED_LOOP_RPM) {
+            runRpmPIDReset();
+            runMode = CLOSED_LOOP_RPM;
+        }
+        targetRpm = (ReadIn[ESC32_ID]/55535.0)*5000;//设置目标转速
+
+        sprintf(tempBuf, "ID %d RPM set to %f \r\n", ESC32_ID,targetRpm);
+        serialPrint(tempBuf);
 	}
 }
 	
@@ -183,7 +177,7 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 static void cliFuncJzs(void *cmd, char *cmdLine){
     uint32_t ReadIn=0;
     uint8_t  CheckDigit=0, ESC_ID=0;
-    char *temp = cmdLine;
+    uint8_t *temp = cmdLine;
     uint32_t MapNum = 0;
 	  
     if (state < ESC_STATE_RUNNING) {
@@ -204,7 +198,7 @@ static void cliFuncJzs(void *cmd, char *cmdLine){
         }
 				fetSetDutyCycle((uint16_t)ReadIn);
 				
-			 sprintf(tempBuf, "set to %d \r\n", ReadIn);
+			 sprintf(tempBuf, "set to %f \r\n", ReadIn);
 			 serialPrint(tempBuf);
 	
 		}  
