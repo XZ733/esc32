@@ -160,14 +160,15 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 			ReadIn[ESC32_ID] = (*(S_Temp)-0x30)*100 + (*(S_Temp+1)-0x30)*10 + (*(S_Temp+2)-0x30);  
 		
 			uint8_t i;
-			for(i = 0; i < 27; i++) LRC += (*(temp+i));
+			for(i = 0; i < 24; i++) LRC += (*(temp+i));
+			LRC = LRC + 340;
 			LRC_H_C = LRC / 16 + '0';
 			if(LRC_H_C > '9') LRC_H_C = (LRC_H_C - '9' + 'a' - 1);
 			LRC_L_C = LRC % 16 + '0';
 			if(LRC_L_C > '9') LRC_L_C = (LRC_L_C - '9' + 'a' - 1);
 			
    
-			if(LRC_H_C != LRC_H_R || LRC_L_C != LRC_L_R)
+			if((LRC_H_C != LRC_H_R)|| (LRC_L_C != LRC_L_R))
 				{
 					serialPrint("Jzs CheckDigit ERROR \r\n");
 					return;
@@ -177,8 +178,8 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 			sprintf(tempBuf, "set to %d \r\n", ReadIn[ESC32_ID]);
 			serialPrint(tempBuf);
 	}
-}
-	
+
+}	
 //解析转速     jzs 0 123 0 
 static void cliFuncJzs(void *cmd, char *cmdLine){
     uint32_t ReadIn=0;
