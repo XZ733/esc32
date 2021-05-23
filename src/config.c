@@ -31,8 +31,8 @@ float p[CONFIG_NUM_PARAMS];
 
 const char *configParameterStrings[] = {
     "CONFIG_VERSION",
-    "STARTUP_MODE",         //ï¿½ï¿½ï¿½ï¿½Ä£Ê½ (ï¿½Å·ï¿½Ä£Ê½ .....)
-    "BAUD_RATE",            //ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½
+    "STARTUP_MODE",
+    "BAUD_RATE",
     "PTERM",
     "ITERM",
     "FF1TERM",
@@ -61,7 +61,7 @@ const char *configParameterStrings[] = {
     "PWM_MAX_VALUE",
     "PWM_MIN_START",
     "PWM_RPM_SCALE",
-    "FET_BRAKING",          //ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ä£Ê½
+    "FET_BRAKING",
     "PNFAC",
     "INFAC",
     "THR1TERM",
@@ -74,75 +74,75 @@ const char *configParameterStrings[] = {
     "PWM_LOWPASS",
     "RPM_MEAS_LP",
     "SERVO_DUTY",
-    "SERVO_P",             //ï¿½Å·ï¿½Ä£Ê½ï¿½ï¿½ PIDï¿½ï¿½ï¿½ï¿½ Pï¿½ï¿½ï¿½ï¿½
-    "SERVO_D",             //ï¿½Å·ï¿½Ä£Ê½ï¿½ï¿½ PIDï¿½ï¿½ï¿½ï¿½ Dï¿½ï¿½ï¿½ï¿½
+    "SERVO_P",
+    "SERVO_D",
     "SERVO_MAX_RATE",
     "SERVO_SCALE",
     "ID"
 };
 
 const char *configFormatStrings[] = {
-    "%f",	    // CONFIG_VERSION
-    "%.0f",	    // STARTUP_MODE
-    "%.0f baud",    // BAUD_RATE
-    "%.3f",	    // PTERM
-    "%.5f",	    // ITERM
-    "%+e",	    // FF1TERM
-    "%+e",	    // FF2TERM
-    "%+e",	    // CL1TERM
-    "%+e",	    // CL2TERM
-    "%+e",	    // CL3TERM
-    "%+e",	    // CL4TERM
-    "%+e",	    // CL5TERM
-    "%.3f mohms",   // SHUNT_RESISTANCE
-    "%.0f us",	    // MIN_PERIOD
-    "%.0f us",	    // MAX_PERIOD
-    "%.0f us",	    // BLANKING_MICROS
-    "%.2f Degs",    // ADVANCE
-    "%.2f Volts",   // START_VOLTAGE
-    "%.0f",	    // GOOD_DETECTS_START
-    "%.0f",	    // BAD_DETECTS_DISARM
-    "%.1f Amps",    // MAX_CURRENT
-    "%.1f KHz",	    // SWITCH_FREQ
-    "%.0f",	    // MOTOR_POLES
-    "%.0f us",	    // PWM_MIN_PERIOD
-    "%.0f us",	    // PWM_MAX_PERIOD
-    "%.0f us",	    // PWM_MIN_VALUE
-    "%.0f us",	    // PWM_LO_VALUE
-    "%.0f us",	    // PWM_HI_VALUE
-    "%.0f us",	    // PWM_MAX_VALUE
-    "%.0f us",	    // PWM_MIN_START
-    "%.0f RPM",	    // PWM_RPM_SCALE
-    "%.0f",	    // FET_BRAKING
-    "%.2f",	    // PNFAC
-    "%.2f",	    // INFAC
-    "%+e",	    // THR1TERM
-    "%+e",	    // THR2TERM
-    "%.0f ms",	    // START_ALIGN_TIME
-    "%.2f Volts",   // START_ALIGN_VOLTAGE
-    "%.0f",	    // START_STEPS_NUM
-    "%.0f us",	    // START_STEPS_PERIOD
-    "%.0f us",	    // START_STEPS_ACCEL
+    "%f",	      	// CONFIG_VERSION
+    "%.0f",	    	// STARTUP_MODE
+    "%.0f baud",  // BAUD_RATE
+    "%.3f",	    	// PTERM
+    "%.5f",	    	// ITERM
+    "%+e",	    	// FF1TERM
+    "%+e",	    	// FF2TERM
+    "%+e",	    	// CL1TERM
+    "%+e",	    	// CL2TERM
+    "%+e",	    	// CL3TERM
+    "%+e",	    	// CL4TERM
+    "%+e",	    	// CL5TERM
+    "%.3f mohms", // SHUNT_RESISTANCE
+    "%.0f us",	  // MIN_PERIOD
+    "%.0f us",	  // MAX_PERIOD
+    "%.0f us",	  // BLANKING_MICROS
+    "%.2f Degs",  // ADVANCE
+    "%.2f Volts", // START_VOLTAGE
+    "%.0f",	    	// GOOD_DETECTS_START
+    "%.0f",	   	  // BAD_DETECTS_DISARM
+    "%.1f Amps",  // MAX_CURRENT
+    "%.1f KHz",	  // SWITCH_FREQ
+    "%.0f",	    	// MOTOR_POLES
+    "%.0f us",	  // PWM_MIN_PERIOD
+    "%.0f us",	  // PWM_MAX_PERIOD
+    "%.0f us",	  // PWM_MIN_VALUE
+    "%.0f us",	  // PWM_LO_VALUE
+    "%.0f us",	  // PWM_HI_VALUE
+    "%.0f us",	  // PWM_MAX_VALUE
+    "%.0f us",	  // PWM_MIN_START
+    "%.0f RPM",	  // PWM_RPM_SCALE
+    "%.0f",	    	// FET_BRAKING
+    "%.2f",	    	// PNFAC
+    "%.2f",	    	// INFAC
+    "%+e",	    	// THR1TERM
+    "%+e",	    	// THR2TERM
+    "%.0f ms",	  // START_ALIGN_TIME
+    "%.2f Volts", // START_ALIGN_VOLTAGE
+    "%.0f",	    	// START_STEPS_NUM
+    "%.0f us",	  // START_STEPS_PERIOD
+    "%.0f us",	  // START_STEPS_ACCEL
     "%2.2f",	    // PWM_LOWPASS
-    "%.3f",	    // RPM_MEAS_LP
-    "%.1f %%",	    // SERVO_DUTY
-    "%.3f",	    // SERVO_P
-    "%.3f",	    // SERVO_D
-    "%.1f deg/s",   // SERVO_MAX_RATE
-    "%.1f deg",	    // SERVO_SCALE
-    "%.0f"     // ID
+    "%.3f",	    	// RPM_MEAS_LP
+    "%.1f %%",	  // SERVO_DUTY
+    "%.3f",	    	// SERVO_P
+    "%.3f",	    	// SERVO_D
+    "%.1f deg/s", // SERVO_MAX_RATE
+    "%.1f deg",	  // SERVO_SCALE
+		
+    "%.0f"     		// ID
 };
 
 void configInit(void) {
     float ver;
 
-    configLoadDefault();                //default num load in p
+    configLoadDefault();                //Ä¬ÈÏÅäÖÃ¶ÁÈëPÊý×é
+    
+    ver = *(float *)FLASH_WRITE_ADDR;   //¶ÁÈ¡°æ±¾ºÅµÄµØÖ·
 
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½È¡ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½
-    ver = *(float *)FLASH_WRITE_ADDR;   //read old ver
-
-    if (isnan(ver))//ï¿½Ð¶ï¿½ver  ï¿½ï¿½ï¿½verÎªï¿½Ç¸ï¿½ï¿½ï¿½(NANï¿½ï¿½ÖµÎª0xffffffff)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ò·µ»ï¿½0 
-		configWriteFlash();//ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½flash
+    if (isnan(ver))											//ÅÐ¶Ïver£¬¸ù¾Ý´óÐ¡Ð´flash
+		configWriteFlash();                 
     else if (ver >= p[CONFIG_VERSION])
 		configReadFlash();
     else if (p[CONFIG_VERSION] > ver)
@@ -150,7 +150,7 @@ void configInit(void) {
 }
 
 // recalculate constants with bounds checking
-//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß½ï¿½Ä¼ï¿½ï¿½
+//È«²¿²ÎÊýµÄ±ß½ç¼ì²é
 static void configRecalcConst(void) {
     adcSetConstants();
     fetSetConstants();
@@ -159,7 +159,7 @@ static void configRecalcConst(void) {
     serialSetConstants();
 }
 
-//ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½index,ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½Öµ
+//¸ù¾Ý´«µÝÊý×éindex,ÉèÖÃ²ÎÊýÖµ
 int configSetParamByID(int i, float value) {
     int ret = 0;
 
@@ -173,7 +173,7 @@ int configSetParamByID(int i, float value) {
     return ret;
 }
 
-//ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½parm,ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½value
+//¸ù¾Ý×Ö·û´®parm,ÉèÖÃ²ÎÊývalue
 int configSetParam(char *param, float value) {
     int ret = 0;
     int i;
@@ -189,7 +189,7 @@ int configSetParam(char *param, float value) {
     return ret;
 }
 
-//ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½param(ï¿½Ö·ï¿½ï¿½ï¿½).ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½index
+//¸ù¾Ý²ÎÊýparam(×Ö·û´®).»ñÈ¡²ÎÊýµÄÊý×éindex
 int configGetId(char *param) {
 	int i;
 
@@ -200,7 +200,7 @@ int configGetId(char *param) {
 	return -1;
 }
 
-#if 0//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ðµï¿½ï¿½ï¿½
+#if 0
 float configGetParam(char *param) {
     int i;
 
@@ -210,16 +210,15 @@ float configGetParam(char *param) {
 	return p[i];
     else
 	//return __float32_nan;
-	return NAN;//AXian ï¿½Ò²ï¿½ï¿½ï¿½__float32_nanï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	return NAN;
 }
 #endif
-
+//Ä¬ÈÏÅäÖÃ¶ÁÈëPÊý×é
 void configLoadDefault(void) {
-    p[CONFIG_VERSION] = DEFAULT_CONFIG_VERSION;          //ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ï¿½Ä°æ±¾
-    p[STARTUP_MODE] = DEFAULT_STARTUP_MODE;              //ï¿½ï¿½ï¿½ï¿½Ä£Ê½(ï¿½Å·ï¿½Ä£Ê½ ....)
-    p[BAUD_RATE] = DEFAULT_BAUD_RATE;                    //ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½
-
-	p[PTERM] = DEFAULT_PTERM;
+    p[CONFIG_VERSION] = DEFAULT_CONFIG_VERSION;
+    p[STARTUP_MODE] = DEFAULT_STARTUP_MODE;
+    p[BAUD_RATE] = DEFAULT_BAUD_RATE;
+		p[PTERM] = DEFAULT_PTERM;
     p[ITERM] = DEFAULT_ITERM;
     p[FF1TERM] = DEFAULT_FF1TERM;
     p[FF2TERM] = DEFAULT_FF2TERM;
@@ -228,8 +227,7 @@ void configLoadDefault(void) {
     p[CL3TERM] = DEFAULT_CL3TERM;
     p[CL4TERM] = DEFAULT_CL4TERM;
     p[CL5TERM] = DEFAULT_CL5TERM;
-
-	p[SHUNT_RESISTANCE] = DEFAULT_SHUNT_RESISTANCE;
+		p[SHUNT_RESISTANCE] = DEFAULT_SHUNT_RESISTANCE;
     p[MIN_PERIOD] = DEFAULT_MIN_PERIOD;
     p[MAX_PERIOD] = DEFAULT_MAX_PERIOD;
     p[BLANKING_MICROS] = DEFAULT_BLANKING_MICROS;
@@ -240,34 +238,29 @@ void configLoadDefault(void) {
     p[MAX_CURRENT] = DEFAULT_MAX_CURRENT;
     p[SWITCH_FREQ] = DEFAULT_SWITCH_FREQ;
     p[MOTOR_POLES] = DEFAULT_MOTOR_POLES;
-
-	p[PWM_MIN_PERIOD] = DEFAULT_PWM_MIN_PERIOD;           //PWM timer1 ch1 ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    p[PWM_MAX_PERIOD] = DEFAULT_PWM_MAX_PERIOD;           //PWM timer1 ch1 ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    p[PWM_MIN_VALUE] = DEFAULT_PWM_MIN_VALUE;             //PWM timer1 ch2 ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		p[PWM_MIN_PERIOD] = DEFAULT_PWM_MIN_PERIOD;           //PWM timer1 ch1 ÊäÈëÄ£Ê½,×îÐ¡µÄÖÜÆÚ
+    p[PWM_MAX_PERIOD] = DEFAULT_PWM_MAX_PERIOD;           //PWM timer1 ch1 ÊäÈëÄ£Ê½,×î´óµÄÖÜÆÚ
+    p[PWM_MIN_VALUE] = DEFAULT_PWM_MIN_VALUE;             //PWM timer1 ch2 ÊäÈëÄ£Ê½,×îÐ¡µÄÖÜÆÚ
     p[PWM_LO_VALUE] = DEFAULT_PWM_LO_VALUE;
     p[PWM_HI_VALUE] = DEFAULT_PWM_HI_VALUE;
-    p[PWM_MAX_VALUE] = DEFAULT_PWM_MAX_VALUE;             //PWM timer1 ch2 ï¿½ï¿½ï¿½ï¿½Ä£Ê½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\
-
+    p[PWM_MAX_VALUE] = DEFAULT_PWM_MAX_VALUE;             //PWM timer1 ch2 ÊäÈëÄ£Ê½,×î´óµÄÖÜÆÚ
     p[PWM_MIN_START] = DEFAULT_PWM_MIN_START;
     p[PWM_RPM_SCALE] = DEFAULT_PWM_RPM_SCALE;
-    p[FET_BRAKING] = DEFAULT_FET_BRAKING;                 //=1 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½Ä£Ê½, =0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
+    p[FET_BRAKING] = DEFAULT_FET_BRAKING;                 //=1 ¿ªÆôÔÊÐíÖÆ¶¯Ä£Ê½, =0 ²»ÔÊÐíÖÆ¶¯
     p[PNFAC] = DEFAULT_PNFAC;
     p[INFAC] = DEFAULT_INFAC;
     p[THR1TERM] = DEFAULT_THR1TERM;
     p[THR2TERM] = DEFAULT_THR2TERM;
-
-	p[START_ALIGN_TIME] = DEFAULT_START_ALIGN_TIME;
+		p[START_ALIGN_TIME] = DEFAULT_START_ALIGN_TIME;
     p[START_ALIGN_VOLTAGE] = DEFAULT_START_ALIGN_VOLTAGE;
     p[START_STEPS_NUM] = DEFAULT_START_STEPS_NUM;
     p[START_STEPS_PERIOD] = DEFAULT_START_STEPS_PERIOD;
     p[START_STEPS_ACCEL] = DEFAULT_START_STEPS_ACCEL;
-
-	p[PWM_LOWPASS] = DEFAULT_PWM_LOWPASS;
+		p[PWM_LOWPASS] = DEFAULT_PWM_LOWPASS;
     p[RPM_MEAS_LP] = DEFAULT_RPM_MEAS_LP;
-
-	p[SERVO_DUTY] = DEFAULT_SERVO_DUTY;
-    p[SERVO_P] = DEFAULT_SERVO_P;                         //ï¿½Å·ï¿½Ä£Ê½ï¿½ï¿½ PIDï¿½ï¿½ï¿½ï¿½ Pï¿½ï¿½ï¿½ï¿½
-    p[SERVO_D] = DEFAULT_SERVO_D;                         //ï¿½Å·ï¿½Ä£Ê½ï¿½ï¿½ PIDï¿½ï¿½ï¿½ï¿½ Dï¿½ï¿½ï¿½ï¿½
+		p[SERVO_DUTY] = DEFAULT_SERVO_DUTY;
+    p[SERVO_P] = DEFAULT_SERVO_P;
+    p[SERVO_D] = DEFAULT_SERVO_D;
     p[SERVO_MAX_RATE] = DEFAULT_SERVO_MAX_RATE;
     p[SERVO_SCALE] = DEFAULT_SERVO_SCALE;
 
@@ -276,7 +269,7 @@ void configLoadDefault(void) {
     configRecalcConst();
 }
 
-//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ð´ï¿½ï¿½flash
+//½«ÅäÖÃÎÄ¼þÐ´Èëflash
 int configWriteFlash(void) 
 {
     uint16_t prevReloadVal;
@@ -323,7 +316,7 @@ int configWriteFlash(void)
     return ret;
 }
 
-//ï¿½ï¿½È¡flashï¿½ÏµÄ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½
+//¶ÁÈ¡flashÉÏµÄ²ÎÊýµ½ÄÚ´æÖÐ
 void configReadFlash(void) {
     memcpy(p, (char *)FLASH_WRITE_ADDR, sizeof(p));
 
