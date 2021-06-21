@@ -52,6 +52,10 @@ static const cliCommand_t cliCommandTable[] = {
 		{"gzs","",cliFuncGzs},																//广播转速
 
 		{"help", "", cliFuncHelp},                            //显示支持的功能命令的帮助信息
+		
+		{"ID","",cliReadID},
+		{"IDChange","",cliChangeID},
+		
     {"input", "[PWM | UART | I2C | CAN]", cliFuncInput},  //设置输入控制模式
 
     {"jzs","",cliFuncJzs},                                //解析转速
@@ -99,6 +103,23 @@ static const char cliClearEOL[] = {0x1b, 0x5b, 0x4b, 0x00};
 static const char cliClearEOS[] = {0x1b, 0x5b, 0x4a, 0x00};
 static const char *stopError = "ESC must be stopped first\r\n";
 static const char *runError = "ESC not running\r\n";
+
+void cliReadID(void *cmd, char *cmdLine) {
+		uint8_t ESC32_ID_NUM = p[ID];                  //电调ID
+	
+	  char ESC32_ID_CHAR[3];
+	  ESC32_ID_CHAR[0] = ESC32_ID_NUM + 0x30;
+	  ESC32_ID_CHAR[1] = '\r';
+		ESC32_ID_CHAR[2] = '\n';
+		serialPrint("ESC32_ID :");
+	  serialPrint(ESC32_ID_CHAR);
+	
+}
+
+void cliChangeID(void *cmd, char *cmdLine) {
+		char InputID = *cmdLine;
+		p[ID] = InputID - 0x30;
+}
 
 
 //命令提示.

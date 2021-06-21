@@ -57,4 +57,7 @@ extern void cliFuncVer(void *cmd, char *cmdLine);
 extern void cliFuncJzs(void *cmd, char *cmdLine);
 extern void cliFuncGzs(void *cmd, char *cmdLine);
 
+extern void cliReadID(void *cmd, char *cmdLine);
+extern void cliChangeID(void *cmd, char *cmdLine);
+
 #endif
