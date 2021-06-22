@@ -25,7 +25,8 @@
 #define CLI_BELL    7	    // bellz
 #define CLI_BS	    8	    // backspace
 
-extern int TempStopFlag ;
+extern int TempStopFlagJZS ;
+extern int TempStopFlagGZS ;
 
 typedef struct {
     char *name;
