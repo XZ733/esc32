@@ -33,6 +33,7 @@
 #include "stm32f10x_dbgmcu.h"
 #include <math.h>
 #include "watchdog.h"
+#include <stdbool.h>
 
 uint32_t runMilis;   //systick中断中自加.没有什么控制用途
 static uint32_t oldIdleCounter;  //上次main函数中,死循环次数.
@@ -53,6 +54,24 @@ volatile uint8_t runMode;//运行模式 (开环模式, RPM模式, 推力模式, 
 static float maxThrust;
 
 int ExternDogCount = 0;
+
+bool takeOffCmdReceived = false;
+
+typedef enum{
+    UART_SPEED_CMD_NORMAL = 0,
+    UART_SPEED_CMD_LOSE
+}takeOffCmdErrorType;
+
+takeOffCmdErrorType UARTSpeedCmdTimeOut = UART_SPEED_CMD_NORMAL;
+
+void UARTSpeedCmdDetectReset()
+{
+    UARTSpeedCmdTimeOut = UART_SPEED_CMD_LOSE;
+}
+
+void UARTSpeedCmdReceived(){
+    UARTSpeedCmdTimeOut = UART_SPEED_CMD_NORMAL;
+}
 
 //执行看门狗喂狗
 void runFeedIWDG(void) {
@@ -120,6 +139,8 @@ void runDisarm(int reason) {
 	digitalHi(statusLed);   // turn off
 	digitalLo(errorLed);    // turn on
 	disarmReason = reason;  // 设置停机原因.给上位机查看状态使用
+
+    takeOffCmdRecieved = false;
 }
 
 //手动运行
@@ -160,6 +181,12 @@ void runStart(void) {
 	else {
 		motorStartSeqInit();//普通启动
 	}
+}
+
+void runReStart(void)
+{
+    runArm();
+    runStart();
 }
 
 //电机停止运行
@@ -308,6 +335,7 @@ static void runWatchDog(void)
 		{
 			if (fetDutyCycle > 0) {
 				runDisarm(REASON_CROSSING_TIMEOUT);//错误停止
+				serialPrint(" ADC_CROSSING_TIMEOUT ERROR \r\n");
 			}
 			else 
 			{
@@ -319,8 +347,12 @@ static void runWatchDog(void)
 		{
 			//在运行过程中,出现错误.停止运行
 			if (fetDutyCycle > 0)
+			{
 				runDisarm(REASON_BAD_DETECTS);//错误停止
-		}
+				serialPrint(" fetBadDetects ERROR \r\n");
+                runReStart();
+			}
+			}
 		else if (state == ESC_STATE_STOPPED) 
 		{
 			//停止模式
@@ -333,6 +365,9 @@ static void runWatchDog(void)
 		adcAmpsOffset = adcAvgAmps;	// record current amperage offset
 		digitalTogg(errorLed);
 	}
+
+    if(TempSpeed >= 50) takeOffCmdRecieved = true;
+
 }
 
 void runRpmPIDReset(void) {
@@ -538,6 +573,9 @@ static void runThrotLim(int32_t duty)
 
 //系统tickcount中断
 void SysTick_Handler(void) {
+
+    static int cnt = 0;
+
     // reload the hardware watchdog
     runFeedIWDG();
 	
@@ -546,13 +584,26 @@ void SysTick_Handler(void) {
 //		if(state == 2) serialPrint("is 2");
 //		if(state == 3) serialPrint("is 3");
 //		if(state == 4) serialPrint("is 4");
+    static bool takeOffDetectStart = false;
+    if(takeOffCmdRecieved > false) takeOffDetectStart = true;
 
-	  ExternDogCount++;
-	  if(ExternDogCount == 10)
-		{
-			ExternDogCount = 0;
-			WatchDogFeed(FeedPin);
-		}
+    if(takeOffDetectStart == true){
+        if(cnt <=1000) cnt++;
+        else {
+            cnt = 0;
+            if (takeOffCmdRecieved == true)
+                UARTSpeedCmdDetectReset();
+            else
+        }
+
+    }
+
+    ExternDogCount++;
+    if(ExternDogCount == 10)
+    {
+        ExternDogCount = 0;
+        WatchDogFeed(FeedPin);
+    }
 
     avgVolts = adcAvgVolts * ADC_TO_VOLTS;                     //转换后的电池电压(一般是12V) = ADC采集电压原始值 * 电压算法
     avgAmps = (adcAvgAmps - adcAmpsOffset) * adcToAmps;        //平均电流 = (当前电流 - 停止时候的电流) * 转换公式

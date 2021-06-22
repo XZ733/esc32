@@ -25,16 +25,16 @@
 #define CLI_BELL    7	    // bellz
 #define CLI_BS	    8	    // backspace
 
-extern int TempStopFlagJZS ;
-extern int TempStopFlagGZS ;
-
 typedef struct {
     char *name;
     char *params;
     void (*cmdFunc)(void *cmd, char *cmdLine);
 } cliCommand_t;
 
+
 extern char version[16];
+
+extern uint16_t TempSpeed;
 
 extern void cliInit(void);
 extern void cliCheck(void);

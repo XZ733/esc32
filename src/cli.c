@@ -38,9 +38,6 @@ static int cliBufIndex; //当前串口缓存的数组index
 static char tempBuf[64];//临时寄存器
 static int cliTelemetry;//自动打印数据模式,在systick中断中会调用cliCheck函数.然后可以自动打印当前的信息(串口方式)
 
-int TempStopFlagJZS = 0;
-int TempStopFlagGZS = 0;
-
 // this table must be sorted by command name
 //这个数组必须按照从小到大排列.因为后面用二分法来搜索
 static const cliCommand_t cliCommandTable[] = {
@@ -106,6 +103,12 @@ static const char cliClearEOL[] = {0x1b, 0x5b, 0x4b, 0x00};
 static const char cliClearEOS[] = {0x1b, 0x5b, 0x4a, 0x00};
 static const char *stopError = "ESC must be stopped first\r\n";
 static const char *runError = "ESC not running\r\n";
+
+
+
+
+
+uint16_t TempSpeed = 0;
 
 void cliReadID(void *cmd, char *cmdLine) {
 		uint8_t ESC32_ID_NUM = p[ID];                  //电调ID
@@ -200,7 +203,12 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 			fetSetDutyCycle((uint16_t)ReadIn[ESC32_ID]);
 			sprintf(tempBuf, "set to %d \r\n", ReadIn[ESC32_ID]);
 			serialPrint(tempBuf);
-	}
+		}
+
+		TempSpeed = ReadIn[ESC32_ID];
+
+		UARTSpeedCmdTimeOut = TAKEOFF_CMD_NORMAL;
+
 }	
 //解析转速     jzs 0 123 0 
 static void cliFuncJzs(void *cmd, char *cmdLine){

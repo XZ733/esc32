@@ -20,6 +20,7 @@
 #define _RUN_H
 
 #include "misc.h"
+#include <stdbool.h>
 
 #define RUN_PERIOD		1000		    // 1ms
 #define RUN_ARM_COUNT		20		    // number of valid PWM signals seen before arming
@@ -52,6 +53,8 @@ extern float runRPMFactor;
 extern uint8_t disarmReason;
 extern uint8_t commandMode;
 volatile extern uint8_t runMode;
+
+extern takeOffCmdErrorType UARTSpeedCmdTimeOut;
 
 extern void runInit(void);
 extern void runNewInput(uint16_t setpoint);
