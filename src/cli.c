@@ -31,12 +31,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 
 char version[16];       //当前软件版本
 static char cliBuf[32]; //串口接收到的数据保存在此数组里面,根据cliBufIndex来索引
 static int cliBufIndex; //当前串口缓存的数组index
 static char tempBuf[64];//临时寄存器
 static int cliTelemetry;//自动打印数据模式,在systick中断中会调用cliCheck函数.然后可以自动打印当前的信息(串口方式)
+
+int TempStopFlag = 0;
 
 // this table must be sorted by command name
 //这个数组必须按照从小到大排列.因为后面用二分法来搜索
@@ -150,6 +153,9 @@ static void cliFuncArm(void *cmd, char *cmdLine) {
 			cliFuncChangeInput(ESC_INPUT_UART);
 		runArm();
 		serialPrint("ESC armed\r\n");
+		runStart();
+		serialPrint("ESC started\r\n");
+		
 	}
 }
 // 广播转速 gzs 123 123 123 123 123 123 123 123 00
@@ -200,7 +206,7 @@ static void cliFuncJzs(void *cmd, char *cmdLine){
     char *temp = cmdLine;
     uint32_t MapNum = 0;
 	  
-    if (state < ESC_STATE_RUNNING) {
+    if (state < ESC_STATE_STOPPED) {
         serialPrint(runError);
     }
     else{
@@ -216,7 +222,20 @@ static void cliFuncJzs(void *cmd, char *cmdLine){
             serialPrint(tempBuf);
             return;
         }
-				fetSetDutyCycle((uint16_t)ReadIn);
+				
+				if(TempStopFlag == 0) fetSetDutyCycle((uint16_t)ReadIn);
+				else 
+				{
+					TempStopFlag = 0;
+					timerCancelAlarm2();
+					state = ESC_STATE_STOPPED;
+					runMode = OPEN_LOOP;
+					fetSetBraking(0);
+					motorStartSeqInit();
+					fetSetDutyCycle((uint16_t)ReadIn);
+				}
+				
+			 if(ReadIn == 0) TempStopFlag = 1;
 				
 			 sprintf(tempBuf, "set to %d \r\n", ReadIn);
 			 serialPrint(tempBuf);

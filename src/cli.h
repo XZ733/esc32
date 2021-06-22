@@ -19,9 +19,13 @@
 #ifndef _CLI_H
 #define _CLI_H
 
+
+
 #define CLI_INTR    3	    // interrupt
 #define CLI_BELL    7	    // bellz
 #define CLI_BS	    8	    // backspace
+
+extern int TempStopFlag ;
 
 typedef struct {
     char *name;

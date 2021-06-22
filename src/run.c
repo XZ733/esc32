@@ -26,6 +26,7 @@
 #include "binary.h"
 #include "config.h"
 #include "misc.h"
+#include "serial.h"
 #include "stm32f10x_exti.h"
 #include "stm32f10x_pwr.h"
 #include "stm32f10x_iwdg.h"
@@ -145,8 +146,6 @@ void runArm(void) {
 		fetBeep(250, 600);
 		timerDelay(10000);
 	}
-
-//	fetBeep(150, 800);
 }
 
 //电机开始运行
@@ -312,7 +311,7 @@ static void runWatchDog(void)
 			}
 			else 
 			{
-				runArm();//手动运行起来
+				//runArm();//手动运行起来
 				pwmIsrRunOn();//PWM开启输入比较
 			}
 		}
@@ -541,6 +540,12 @@ static void runThrotLim(int32_t duty)
 void SysTick_Handler(void) {
     // reload the hardware watchdog
     runFeedIWDG();
+	
+//		if(state == 0) serialPrint("is 0");
+//		if(state == 1) serialPrint("is 1");
+//		if(state == 2) serialPrint("is 2");
+//		if(state == 3) serialPrint("is 3");
+//		if(state == 4) serialPrint("is 4");
 
 	  ExternDogCount++;
 	  if(ExternDogCount == 10)
