@@ -193,20 +193,11 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 					serialPrint("Gzs CheckDigit ERROR \r\n");
 					return;
 				}
-			if(TempStopFlagGZS == 0) fetSetDutyCycle((uint16_t)ReadIn[ESC32_ID]);
-			else 
+			if(state == ESC_STATE_STOPPED && ReadIn[ESC32_ID]) 
 			{
-				TempStopFlagGZS = 0;
-				timerCancelAlarm2();
-				state = ESC_STATE_STOPPED;
-				runMode = OPEN_LOOP;
-				fetSetBraking(0);
 				motorStartSeqInit();
-				fetSetDutyCycle((uint16_t)ReadIn[ESC32_ID]);
 			}
-			
-		 if(ReadIn[ESC32_ID] == 0) TempStopFlagGZS = 1;
-				
+			fetSetDutyCycle((uint16_t)ReadIn[ESC32_ID]);
 			sprintf(tempBuf, "set to %d \r\n", ReadIn[ESC32_ID]);
 			serialPrint(tempBuf);
 	}
@@ -234,23 +225,14 @@ static void cliFuncJzs(void *cmd, char *cmdLine){
             serialPrint(tempBuf);
             return;
         }
-				
-				if(TempStopFlagJZS == 0) fetSetDutyCycle((uint16_t)ReadIn);
-				else 
-				{
-					TempStopFlagJZS = 0;
-					timerCancelAlarm2();
-					state = ESC_STATE_STOPPED;
-					runMode = OPEN_LOOP;
-					fetSetBraking(0);
-					motorStartSeqInit();
-					fetSetDutyCycle((uint16_t)ReadIn);
-				}
-				
-			 if(ReadIn == 0) TempStopFlagJZS = 1;
-				
-			 sprintf(tempBuf, "set to %d \r\n", ReadIn);
-			 serialPrint(tempBuf);
+        if(state == ESC_STATE_STOPPED && ReadIn)
+        {
+            motorStartSeqInit();
+        }
+        fetSetDutyCycle((uint16_t)ReadIn);
+
+        sprintf(tempBuf, "set to %d \r\n", ReadIn);
+        serialPrint(tempBuf);
 	
 		}  
 	}

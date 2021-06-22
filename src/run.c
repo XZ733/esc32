@@ -311,7 +311,7 @@ static void runWatchDog(void)
 			}
 			else 
 			{
-				//runArm();//手动运行起来
+				runArm();//手动运行起来
 				pwmIsrRunOn();//PWM开启输入比较
 			}
 		}
