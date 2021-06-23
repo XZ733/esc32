@@ -31,6 +31,7 @@
 #include "stm32f10x_pwr.h"
 #include "stm32f10x_iwdg.h"
 #include "stm32f10x_dbgmcu.h"
+#include "speedcmdprocess.h"
 #include <math.h>
 #include "watchdog.h"
 #include <stdbool.h>
@@ -55,23 +56,6 @@ static float maxThrust;
 
 int ExternDogCount = 0;
 
-bool takeOffCmdReceived = false;
-
-typedef enum{
-    UART_SPEED_CMD_NORMAL = 0,
-    UART_SPEED_CMD_LOSE
-}takeOffCmdErrorType;
-
-takeOffCmdErrorType UARTSpeedCmdTimeOut = UART_SPEED_CMD_NORMAL;
-
-void UARTSpeedCmdDetectReset()
-{
-    UARTSpeedCmdTimeOut = UART_SPEED_CMD_LOSE;
-}
-
-void UARTSpeedCmdReceived(){
-    UARTSpeedCmdTimeOut = UART_SPEED_CMD_NORMAL;
-}
 
 //执行看门狗喂狗
 void runFeedIWDG(void) {
@@ -140,7 +124,6 @@ void runDisarm(int reason) {
 	digitalLo(errorLed);    // turn on
 	disarmReason = reason;  // 设置停机原因.给上位机查看状态使用
 
-    takeOffCmdRecieved = false;
 }
 
 //手动运行
@@ -366,8 +349,6 @@ static void runWatchDog(void)
 		digitalTogg(errorLed);
 	}
 
-    if(TempSpeed >= 50) takeOffCmdRecieved = true;
-
 }
 
 void runRpmPIDReset(void) {
@@ -584,20 +565,17 @@ void SysTick_Handler(void) {
 //		if(state == 2) serialPrint("is 2");
 //		if(state == 3) serialPrint("is 3");
 //		if(state == 4) serialPrint("is 4");
-    static bool takeOffDetectStart = false;
-    if(takeOffCmdRecieved > false) takeOffDetectStart = true;
 
-    if(takeOffDetectStart == true){
-        if(cnt <=1000) cnt++;
+    if(TempSpeed >= 50) {  //默认空中状态
+        if(cnt <= 1000) cnt++;
         else {
             cnt = 0;
-            if (takeOffCmdRecieved == true)
-                UARTSpeedCmdDetectReset();
-            else
-        }
-
-    }
-
+            if (UARTSpeedCmdState == true) UARTSpeedCmdDetectReset();   
+            else fetSetDutyCycle(100);
+				}
+		}
+		else cnt = 0;
+		
     ExternDogCount++;
     if(ExternDogCount == 10)
     {

@@ -54,7 +54,6 @@ extern uint8_t disarmReason;
 extern uint8_t commandMode;
 volatile extern uint8_t runMode;
 
-extern takeOffCmdErrorType UARTSpeedCmdTimeOut;
 
 extern void runInit(void);
 extern void runNewInput(uint16_t setpoint);

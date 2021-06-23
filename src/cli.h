@@ -19,7 +19,7 @@
 #ifndef _CLI_H
 #define _CLI_H
 
-
+#include <stdint.h>
 
 #define CLI_INTR    3	    // interrupt
 #define CLI_BELL    7	    // bellz
@@ -35,6 +35,7 @@ typedef struct {
 extern char version[16];
 
 extern uint16_t TempSpeed;
+
 
 extern void cliInit(void);
 extern void cliCheck(void);

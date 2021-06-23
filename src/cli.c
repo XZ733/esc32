@@ -27,6 +27,7 @@
 #include "config.h"
 #include "rcc.h"
 #include "timer.h"
+#include "speedcmdprocess.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -103,10 +104,6 @@ static const char cliClearEOL[] = {0x1b, 0x5b, 0x4b, 0x00};
 static const char cliClearEOS[] = {0x1b, 0x5b, 0x4a, 0x00};
 static const char *stopError = "ESC must be stopped first\r\n";
 static const char *runError = "ESC not running\r\n";
-
-
-
-
 
 uint16_t TempSpeed = 0;
 
@@ -207,7 +204,7 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 
 		TempSpeed = ReadIn[ESC32_ID];
 
-		UARTSpeedCmdTimeOut = TAKEOFF_CMD_NORMAL;
+		UARTSpeedCmdReceived();
 
 }	
 //解析转速     jzs 0 123 0 
