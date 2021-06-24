@@ -114,6 +114,8 @@ uint16_t runIWDGInit(int ms)
 
 //esc32 非正常停止运行 进入初始化
 void runDisarm(int reason) {
+	
+	char dar[3];
 	fetSetDutyCycle(0);  //fet占空比设置为0
 
 	timerCancelAlarm2();
@@ -123,6 +125,10 @@ void runDisarm(int reason) {
 	digitalHi(statusLed);   // turn off
 	digitalLo(errorLed);    // turn on
 	disarmReason = reason;  // 设置停机原因.给上位机查看状态使用
+	dar[0] = disarmReason + 0x30;
+	dar[1] = '\r';
+	dar[2] = '\n';
+	serialPrint(dar);
 
 }
 
@@ -333,7 +339,7 @@ static void runWatchDog(void)
 			{
 				runDisarm(REASON_BAD_DETECTS);//错误停止
 				serialPrint(" fetBadDetects ERROR \r\n");
-                runReStart();
+        runReStart();
 			}
 			}
 		else if (state == ESC_STATE_STOPPED) 
@@ -555,7 +561,8 @@ static void runThrotLim(int32_t duty)
 //系统tickcount中断
 void SysTick_Handler(void) {
 
-    static int cnt = 0;
+    static uint16_t cnt = 0;
+//	  static uint16_t LastSpeed = 0;
 
     // reload the hardware watchdog
     runFeedIWDG();
@@ -566,15 +573,23 @@ void SysTick_Handler(void) {
 //		if(state == 3) serialPrint("is 3");
 //		if(state == 4) serialPrint("is 4");
 
-    if(TempSpeed >= 50) {  //默认空中状态
+    if(takeOffFlag  == true) {             //默认已起飞状态
         if(cnt <= 1000) cnt++;
         else {
-            cnt = 0;
-            if (UARTSpeedCmdState == true) UARTSpeedCmdDetectReset();   
-            else fetSetDutyCycle(100);
-				}
+//					serialPrint("begin cmd test\r\n");
+					cnt = 0;
+					if (UARTSpeedCmdState == UART_SPEED_CMD_NORMAL)
+					{
+						UARTSpeedCmdDetectReset(); 
+//						serialPrint("loop ok\r\n");
+					}						
+					else 
+					{
+						fetSetDutyCycle(30);
+//						serialPrint("speed 30\r\n");
+					}
+					}
 		}
-		else cnt = 0;
 		
     ExternDogCount++;
     if(ExternDogCount == 10)

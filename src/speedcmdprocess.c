@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include "speedcmdprocess.h"
 
-bool UARTTakeOffCmdReceived = false;
+//bool UARTTakeOffCmdReceived = false;
 
 
 UARTSpeedCmdErrorType UARTSpeedCmdState = UART_SPEED_CMD_NORMAL;

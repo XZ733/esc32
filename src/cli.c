@@ -106,6 +106,7 @@ static const char *stopError = "ESC must be stopped first\r\n";
 static const char *runError = "ESC not running\r\n";
 
 uint16_t TempSpeed = 0;
+bool takeOffFlag = false;
 
 void cliReadID(void *cmd, char *cmdLine) {
 		uint8_t ESC32_ID_NUM = p[ID];                  //电调ID
@@ -163,7 +164,7 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 		uint16_t ReadIn[8];                         //转速数组
 		char *temp = cmdLine;                         
 
-		uint32_t ESC32_ID = p[ID];                  //电调ID
+		uint8_t ESC32_ID = p[ID];                  //电调ID
 	
 		char *S_Temp = cmdLine + 3 * ESC32_ID;      //转速指针
 		char *J_Temp = cmdLine + 24;                //校验指针
@@ -178,8 +179,6 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
         serialPrint(runError);
 		}
 		else{
-			ReadIn[ESC32_ID] = (*(S_Temp)-0x30)*100 + (*(S_Temp+1)-0x30)*10 + (*(S_Temp+2)-0x30);  
-		
 			uint8_t i;
 			for(i = 0; i < 24; i++) LRC += (*(temp+i));
 			LRC = LRC + 340;
@@ -193,6 +192,9 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 					serialPrint("Gzs CheckDigit ERROR \r\n");
 					return;
 				}
+				
+			ReadIn[ESC32_ID] = (*(S_Temp)-0x30)*100 + (*(S_Temp+1)-0x30)*10 + (*(S_Temp+2)-0x30); 
+			
 			if(state == ESC_STATE_STOPPED && ReadIn[ESC32_ID]) 
 			{
 				motorStartSeqInit();
@@ -204,15 +206,16 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 
 		TempSpeed = ReadIn[ESC32_ID];
 
+		if(TempSpeed >= 50) takeOffFlag = true;
+		
 		UARTSpeedCmdReceived();
 
 }	
 //解析转速     jzs 0 123 0 
 static void cliFuncJzs(void *cmd, char *cmdLine){
-    uint32_t ReadIn=0;
+    uint16_t ReadIn=0;
     uint8_t  CheckDigit=0, ESC_ID=0;
     char *temp = cmdLine;
-    uint32_t MapNum = 0;
 	  
     if (state < ESC_STATE_STOPPED) {
         serialPrint(runError);
