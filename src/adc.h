@@ -25,25 +25,25 @@
 #define ADC_FAST_SAMPLE
 
 #ifdef ADC_FAST_SAMPLE
-    #define ADC_SAMPLE_TIME	ADC_SampleTime_7Cycles5
-    #define ADC_DETECTION_TIME	(uint16_t)((7.5+12.5)*4*TIMER_MULT/12)	    // 4 ADC groups w/7.5 clk sample @ 12Mhz ADC clock (in us)
+    #define ADC_SAMPLE_TIME	ADC_SampleTime_7Cycles5                 				//采样周期
+    #define ADC_DETECTION_TIME	(uint16_t)((7.5+12.5)*4*TIMER_MULT/12)	    //转换周期 4 ADC groups w/7.5 clk sample @ 12Mhz ADC clock (in us)
 #else
     #define ADC_SAMPLE_TIME	ADC_SampleTime_28Cycles5
     #define ADC_DETECTION_TIME	(uint16_t)((28.5+12.5)*2*TIMER_MULT/12)	    // 2 ADC groups w/28.5 clk sample @ 12Mhz ADC clock (in us)
 #endif	// ADC_FAST_SAMPLE
 
-#define ADC_CHANNELS            2
-#define ADC_CLOCK               RCC_PCLK2_Div6              // 12Mhz
+#define ADC_CHANNELS            2    												//使用ADC外设数目
+#define ADC_CLOCK               RCC_PCLK2_Div6              //ADC外设12Mhz
 
-#define ADC_REF_VOLTAGE         3.3f
-#define ADC_TO_VOLTAGE		(ADC_REF_VOLTAGE / (1<<12)) // 12 bit ADC resolution
+#define ADC_REF_VOLTAGE         3.3f												//ADC参考电压
+#define ADC_TO_VOLTAGE		(ADC_REF_VOLTAGE / (1<<12))       //ADC电压单位精度
 
 #define ADC_AMPS_PRECISION	16
 #define ADC_SHUNT_GAIN		499.0f
 
 #define ADC_VOLTS_PRECISION	16
 #define ADC_VOLTS_SLOPE		((10.0f + 1.5f) / 1.5f)    // Rtop = 10K, Rbot = 1.5K
-#define ADC_TO_VOLTS		(ADC_TO_VOLTAGE * ADC_VOLTS_SLOPE / ((1<<(ADC_VOLTS_PRECISION))+1))  //ADC的采样值 到电压的转换基本公式
+#define ADC_TO_VOLTS		(ADC_TO_VOLTAGE * ADC_VOLTS_SLOPE / ((1<<(ADC_VOLTS_PRECISION))+1))//ADC的采样值 到电压的转换基本公式
 
 #define ADC_MIN_SHUNT		0.05	    // milli Ohms
 #define ADC_MAX_SHUNT		1.0	    // milli Ohms

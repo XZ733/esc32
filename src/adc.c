@@ -28,7 +28,8 @@
 #include "misc.h"
 
 #ifdef ADC_FAST_SAMPLE
-	static uint32_t adcRawData[ADC_CHANNELS*4]; //adc的采样值.使用dma方式采样.采样完成后自动放入这里
+static uint32_t adcRawData[ADC_CHANNELS*4]; //adc的采样值缓冲数组 为DMA配置
+																						//双ADC模式，规则同步+注入同步 
 	//这个变量是32位的
 	//依次存放    0             1             2       3       | 4         5         6       7
 	//ADC1        SENSE_CURRENT SENSE_CURRENT SENSE_B SENSE_B | SENSE_VIN SENSE_VIN SENSE_B SENSE_B  低16位
@@ -38,31 +39,31 @@
 	static uint32_t adcRawData[ADC_CHANNELS*2];
 #endif
 
-float adcToAmps;    //ADC的电流测量值 转换成 实际的电流公式
-static int16_t adcAdvance;
-static int32_t adcblankingMicros;
-int32_t adcMaxPeriod;//ADC最大的周期
-static int32_t adcMinPeriod;//ADC最小的换相时间(us)
+float adcToAmps;                        //ADC电流精度
+static int16_t adcAdvance;              //和进角有关
+static int32_t adcblankingMicros;       //通讯间隔
+int32_t adcMaxPeriod;										//ADC最大的采样周期
+static int32_t adcMinPeriod;						//ADC最小的采样时间
 
 
-static int16_t histIndex;  //数组的索引值
-int16_t histSize;          //数组的大小
-static uint16_t histA[ADC_HIST_SIZE];//adc转换后的值,保准在这个数组里
+static int16_t histIndex;               //数组的索引值
+int16_t histSize;          							//数组的大小
+static uint16_t histA[ADC_HIST_SIZE];		//adc转换后的值,保准在这个数组里
 static uint16_t histB[ADC_HIST_SIZE];
 static uint16_t histC[ADC_HIST_SIZE];
 
 uint32_t avgA, avgB, avgC;    //电机A B C相的电压ADC采集.平均值
-int32_t adcAmpsOffset;        //当前ADC采集转换后的 传感器电流 电流偏移 (在停止运行模式下,电流的值.做偏移值)
-volatile int32_t adcAvgAmps;  //当前ADC采集转换后的 传感器电流
-volatile int32_t adcMaxAmps;  //运行中最大 传感器电流
+int32_t adcAmpsOffset;        //当前ADC采集转换后的传感器电流 电流偏移 (在停止运行模式下,电流的值.做偏移值)
+volatile int32_t adcAvgAmps;  //当前ADC采集转换后的传感器电流
+volatile int32_t adcMaxAmps;  //运行中最大传感器电流
 volatile int32_t adcAvgVolts; //运行的电压
 
 static uint8_t adcStateA, adcStateB, adcStateC;//当前的状态
 
-volatile uint32_t detectedCrossing;
+volatile uint32_t detectedCrossing;  //换相检测
 volatile uint32_t crossingPeriod;
 volatile int32_t adcCrossingPeriod;
-static uint32_t nextCrossingDetect;  //ADC换相时间(在中断中会计算出来,下一个换相的时间)
+static uint32_t nextCrossingDetect;  //ADC下一次换相检测时间(在中断中会计算出来,下一个换相的时间)
 
 //重新对ADC内部校准
 static void adcCalibrateADC(ADC_TypeDef *ADCx) 
@@ -97,11 +98,10 @@ void adcInit(void)
 
     // DMA1 channel1 configuration (ADC1)
     DMA_DeInit(DMA1_Channel1);
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)ADC1 + 0x4c;   //从这个寄存器读
-    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&adcRawData[0];    //写入到这个内存
-	DMA_InitStructure.DMA_BufferSize = sizeof(adcRawData)/4;            //传输数据量
-
-	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;                     //从外设读
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)ADC1 + 0x4c;      //从这个寄存器读
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&adcRawData[0];       //写入到这个内存
+	  DMA_InitStructure.DMA_BufferSize = sizeof(adcRawData)/4;               //传输数据量
+	  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;                     //从外设读
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;       //外设地址不递加
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;                //存储器地址递加
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Word;//外设数据宽度32位
@@ -111,7 +111,7 @@ void adcInit(void)
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;                           //非存储器到存储器模式
     DMA_Init(DMA1_Channel1, &DMA_InitStructure);
 
-    DMA_ITConfig(DMA1_Channel1, DMA_IT_TC | DMA_IT_HT, ENABLE);
+    DMA_ITConfig(DMA1_Channel1, DMA_IT_TC | DMA_IT_HT, ENABLE);						 //传输完成中断，传输一半中断
     DMA_ClearITPendingBit(DMA1_IT_GL1 | DMA1_IT_TC1 | DMA1_IT_HT1);
     DMA_Cmd(DMA1_Channel1, ENABLE);
 
@@ -125,20 +125,17 @@ void adcInit(void)
 
 
     // ADC1 configuration
-//    ADC_InitStructure.ADC_Mode = ADC_Mode_RegSimult;
-    ADC_InitStructure.ADC_Mode = ADC_Mode_RegInjecSimult;//混合的同步规则+注入同步模式
-    ADC_InitStructure.ADC_ScanConvMode = ENABLE;         //使用扫描模式
-
-	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;                  //连续转换模式
+    // ADC_InitStructure.ADC_Mode = ADC_Mode_RegSimult;
+    ADC_InitStructure.ADC_Mode = ADC_Mode_RegInjecSimult;   						//混合的同步规则+注入同步模式
+    ADC_InitStructure.ADC_ScanConvMode = ENABLE;         								//使用扫描模式
+	  ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;                  //连续转换模式
     ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None; //SWSTART 软件触发模式
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;              //数据右对齐
-
-	ADC_InitStructure.ADC_NbrOfChannel = sizeof(adcRawData)/4;//规则通道序列长度 有8个转换通道
+	  ADC_InitStructure.ADC_NbrOfChannel = sizeof(adcRawData)/4;   		    //规则通道序列长度 有8个转换通道
     ADC_Init(ADC1, &ADC_InitStructure);
 
 #ifdef ADC_FAST_SAMPLE
 	//有8个转换通道 都是规则转换序列
-	//ADC_SAMPLE_TIME是AD的采样时间
     ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SAMPLE_TIME);	// SENSE_CURRENT
     ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 2, ADC_SAMPLE_TIME);	// SENSE_CURRENT
     ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SAMPLE_TIME);	// SENSE_B
@@ -159,16 +156,15 @@ void adcInit(void)
 	// ADC2 configuration
 	//ADC_InitStructure.ADC_Mode = ADC_Mode_RegSimult;
     ADC_InitStructure.ADC_Mode = ADC_Mode_RegInjecSimult;                  //混合的同步规则+注入同步模式
-	ADC_InitStructure.ADC_ScanConvMode = ENABLE;                           //使用扫描模式
-
-	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;                     //连续转换模式
+	  ADC_InitStructure.ADC_ScanConvMode = ENABLE;                           //使用扫描模式
+	  ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;                     //连续转换模式
     ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;    //SWSTART 软件触发模式
     ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;                 //数据右对齐
-
-	ADC_InitStructure.ADC_NbrOfChannel = sizeof(adcRawData)/4;             //规则通道序列长度 有8个转换通道
+	  ADC_InitStructure.ADC_NbrOfChannel = sizeof(adcRawData)/4;             //规则通道序列长度 有8个转换通道
     ADC_Init(ADC2, &ADC_InitStructure);
 
 #ifdef ADC_FAST_SAMPLE
+//8个转换通道 都是规则转换序列，和ADC1错开
     ADC_RegularChannelConfig(ADC2, ADC_Channel_1, 1, ADC_SAMPLE_TIME);	// SENSE_A
     ADC_RegularChannelConfig(ADC2, ADC_Channel_1, 2, ADC_SAMPLE_TIME);	// SENSE_A
     ADC_RegularChannelConfig(ADC2, ADC_Channel_3, 3, ADC_SAMPLE_TIME);	// SENSE_C
@@ -192,15 +188,14 @@ void adcInit(void)
     ADC_Cmd(ADC2, ENABLE);
     adcCalibrateADC(ADC2);
 
-    nextCrossingDetect = adcMaxPeriod;
+    nextCrossingDetect = adcMaxPeriod;         //将下一次换相检测时间设为最大值
 
-    // setup injection sequence
 	// 设置注入序列
-    ADC_InjectedSequencerLengthConfig(ADC1, 1);//注入序列只有1个转换
+    ADC_InjectedSequencerLengthConfig(ADC1, 1);                        //注入序列各只有1个转换
     ADC_InjectedSequencerLengthConfig(ADC2, 1);
     ADC_InjectedChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SAMPLE_TIME);//设置注入序列转换的通道
     ADC_InjectedChannelConfig(ADC2, ADC_Channel_4, 1, ADC_SAMPLE_TIME);
-    ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);//注入序列 使用外部事件启动转换
+    ADC_ExternalTrigInjectedConvCmd(ADC1, ENABLE);                     //注入序列 使用外部事件启动转换
     ADC_ExternalTrigInjectedConvCmd(ADC2, ENABLE);
     ADC_ExternalTrigInjectedConvConfig(ADC1, ADC_ExternalTrigInjecConv_None);//软件触发
     ADC_ExternalTrigInjectedConvConfig(ADC2, ADC_ExternalTrigInjecConv_None);
@@ -208,7 +203,7 @@ void adcInit(void)
     // Start ADC1 / ADC2 Conversions
     ADC_SoftwareStartConvCmd(ADC1, ENABLE);//开始转换.并设置好外部触发模式
 }
-
+//设置换相周期
 void adcSetCrossingPeriod(int32_t crossPer) {
     adcCrossingPeriod = crossPer<<15;
     crossingPeriod = crossPer;
@@ -255,11 +250,11 @@ static void adcEvaluateHistSize(void)
     int16_t sizeNeeded;
 
 //  sizeNeeded = crossingPeriod/16/TIMER_MULT;
-//    sizeNeeded = crossingPeriod/20/TIMER_MULT;
+//  sizeNeeded = crossingPeriod/20/TIMER_MULT;
 //  sizeNeeded = crossingPeriod/24/TIMER_MULT;
     sizeNeeded = crossingPeriod/32/TIMER_MULT;
 
-//    if (sizeNeeded > (histSize+1) && histSize < ADC_HIST_SIZE)
+//  if (sizeNeeded > (histSize+1) && histSize < ADC_HIST_SIZE)
     if (sizeNeeded > (histSize+1) && histSize < ADC_HIST_SIZE)
 		adcGrowHist();  //增加
     else if (sizeNeeded < (histSize-1) && sizeNeeded > 1)
@@ -278,20 +273,22 @@ void DMA1_Channel1_IRQHandler(void)
 	//__asm volatile ("cpsid i");
 	//CPSID_I();
 	__disable_irq();
-	currentMicros = timerGetMicros();//获取当前时间
+	currentMicros = timerGetMicros();    //获取当前时间戳
 	//__asm volatile ("cpsie i");
 	//CPSIE_I();
 	__enable_irq();
 
 #ifdef ADC_FAST_SAMPLE
+	
+	//传输完成中断
 	if ((DMA1->ISR & DMA1_FLAG_TC1) != RESET) {
-		//转换完成了
 		raw += (ADC_CHANNELS * 4);        // 4 16bit words each
 		adcAvgVolts -= (adcAvgVolts - (int32_t)((raw[0]+raw[2]) << (ADC_VOLTS_PRECISION-1))) >> 6;
 		//                                       VIN    VIN
 	}
+	
+	//半传输完成中断 计算电流
 	else {
-		//半传输完成中断 计算电流
 		adcAvgAmps -= (adcAvgAmps - (int32_t)((raw[0]+raw[2])<<(ADC_AMPS_PRECISION-1)))>>6;
 		//                                     SENSE_CURRENT
 	}
@@ -309,7 +306,6 @@ void DMA1_Channel1_IRQHandler(void)
 
 	if (runMode == SERVO_MODE)//运行在伺服模式 不需要AD采样
 		return;
-
 
 	// blanking time after commutation
 	if (!fetCommutationMicros || 
@@ -414,9 +410,9 @@ void DMA1_Channel1_IRQHandler(void)
 
 					// 计算下一个换相时间
 					// calculate next crossing detection time
-					//		nextCrossingDetect = crossingPeriod*2/3;
+					// nextCrossingDetect = crossingPeriod*2/3;
 					nextCrossingDetect = crossingPeriod*3/4;
-					//		nextCrossingDetect = crossingPeriod*6/8;
+					// nextCrossingDetect = crossingPeriod*6/8;
 
 
 					// record highest current draw for this run
@@ -429,7 +425,7 @@ void DMA1_Channel1_IRQHandler(void)
 	}    
 }
 
-#if 0//没有找到在哪里调用
+#if 0
 // start injected conversion of current sensor
 int32_t adcGetInstantCurrent(void) {
     ADC_ClearFlag(ADC1, ADC_FLAG_JEOC);
@@ -439,48 +435,48 @@ int32_t adcGetInstantCurrent(void) {
     return (int32_t)ADC_GetInjectedConversionValue(ADC1, ADC_InjectedChannel_1);
 }
 #endif
-
+//参数设置
 void adcSetConstants(void) 
 {
-    float shuntResistance = p[SHUNT_RESISTANCE];
-    float advance = p[ADVANCE];
-    float blankingMicros = p[BLANKING_MICROS];
-    float minPeriod = p[MIN_PERIOD];
-    float maxPeriod = p[MAX_PERIOD];
+    float shuntResistance = p[SHUNT_RESISTANCE];       //蛇形电阻大小
+    float advance = p[ADVANCE];                        //进角
+    float blankingMicros = p[BLANKING_MICROS];         //通讯间隔周期
+    float minPeriod = p[MIN_PERIOD];									 //最小的通讯周期
+    float maxPeriod = p[MAX_PERIOD];									 //最大的通讯周期
 
-    // bounds checking
-	// 边界检查.不能超出一定的范围
+    //蛇形电阻限值
     if (shuntResistance > ADC_MAX_SHUNT)
 		shuntResistance = ADC_MAX_SHUNT;
     else if (shuntResistance < ADC_MIN_SHUNT)
 		shuntResistance = ADC_MIN_SHUNT;
-
+    //进角限值
     if (advance > ADC_MAX_ADVANCE)
 		advance = ADC_MAX_ADVANCE;
     else if (advance < ADC_MIN_ADVANCE)
 		advance = ADC_MIN_ADVANCE;
-
+    //通讯间隔限值
     if (blankingMicros > ADC_MAX_BLANKING_MICROS)
 		blankingMicros = ADC_MAX_BLANKING_MICROS;
     else if (blankingMicros < ADC_MIN_BLANKING_MICROS)
 		blankingMicros = ADC_MIN_BLANKING_MICROS;
-
+    //通讯最小周期限值
     if (minPeriod > ADC_MAX_MIN_PERIOD)
 		minPeriod = ADC_MAX_MIN_PERIOD;
     else if (minPeriod < ADC_MIN_MIN_PERIOD)
 		minPeriod = ADC_MIN_MIN_PERIOD;
-
+    //通讯最大周期限值
     if (maxPeriod > ADC_MAX_MAX_PERIOD)
 		maxPeriod = ADC_MAX_MAX_PERIOD;
     else if (maxPeriod < ADC_MIN_MAX_PERIOD)
 		maxPeriod = ADC_MIN_MAX_PERIOD;
 
-	//计算出几个参数
+	  //计算adc电流单位精度和 adcAdvance
     adcToAmps = ((ADC_TO_VOLTAGE / ((1<<(ADC_AMPS_PRECISION))+1)) / (ADC_SHUNT_GAIN * shuntResistance / 1000.0f));
     adcAdvance = 100.0f / (advance * (50.0f / 30.0f));
-    adcblankingMicros = blankingMicros * TIMER_MULT;
-    adcMinPeriod = minPeriod * TIMER_MULT;//adc的最小采样周期(时间us)
-    adcMaxPeriod = maxPeriod * TIMER_MULT;//adc的最大采样周期
+		
+    adcblankingMicros = blankingMicros * TIMER_MULT;  //adc采集时间间隔
+    adcMinPeriod = minPeriod * TIMER_MULT;      		  //adc的最小采样周期
+    adcMaxPeriod = maxPeriod * TIMER_MULT;					  //adc的最大采样周期
 
 	//写回数组里面
     p[SHUNT_RESISTANCE] = shuntResistance;

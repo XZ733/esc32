@@ -45,32 +45,31 @@ static const cliCommand_t cliCommandTable[] = {
     {"beep", "<frequency> <duration>", cliFuncBeep},      //让电机beep
     {"binary", "", cliFuncBinary},                        //串口切换为 binary控制模式.
     {"bootloader", "", cliFuncBoot},                      //重启esc32
-
-	{"config", "[READ | WRITE | DEFAULT]", cliFuncConfig},//参数表的 读取 写入 恢复模式操作
-
-	{"disarm", "", cliFuncDisarm},                        //停止手动运行模式
+	  {"config", "[READ | WRITE | DEFAULT]", cliFuncConfig},//参数表的 读取 写入 恢复模式操作
+	  {"disarm", "", cliFuncDisarm},                        //停止手动运行模式
     {"duty", "<percent>", cliFuncDuty},                   //设置占空比(0~100%,值越高转速越快)
+    
+		{"gzs","",cliFuncGzs},																//广播转速
 
-    {"gzs","",cliFuncGzs},
-
-	{"help", "", cliFuncHelp},                            //显示支持的功能命令的帮助信息
+		{"help", "", cliFuncHelp},                            //显示支持的功能命令的帮助信息
+		
+		{"ID","",cliReadID},
+		{"IDChange","",cliChangeID},
+		
     {"input", "[PWM | UART | I2C | CAN]", cliFuncInput},  //设置输入控制模式
 
-    {"jzs","",cliFuncJzs},                                //广播转速
+    {"jzs","",cliFuncJzs},                                //解析转速
 
     {"mode", "[OPEN_LOOP | RPM | THRUST | SERVO]", cliFuncMode}, //设置运行模式
-    
-	{"pos", "<degrees>", cliFuncPos},                   //设置电机要转到什么角度(只在伺服控制模式下使用),传递进来的参数是电机的目标角度
-    {"pwm", "<microseconds>", cliFuncPwm},              //设置电机的PWM
-	{"rpm", "<target>", cliFuncRpm},                    //设置目标速度
-
-	{"set", "LIST | [<PARAMETER> <value>]", cliFuncSet},//设置参数表
-    {"start", "", cliFuncStart},                        //电机开始运行
-    {"status", "", cliFuncStatus},                      //显示状态
-    {"stop", "", cliFuncStop},                          //电机停止运行
-
-	{"telemetry", "<Hz>", cliFuncTelemetry},            //自动显示电调状态(和控制无关)
-    {"version", "", cliFuncVer}                         //显示版本
+    {"pos", "<degrees>", cliFuncPos},                   				 //设置电机要转到什么角度(只在伺服控制模式下使用),传递进来的参数是电机的目标角度
+    {"pwm", "<microseconds>", cliFuncPwm},              				 //设置电机的PWM
+		{"rpm", "<target>", cliFuncRpm},                    				 //设置目标速度
+		{"set", "LIST | [<PARAMETER> <value>]", cliFuncSet},				 //设置参数表
+    {"start", "", cliFuncStart},                           			 //电机开始运行
+    {"status", "", cliFuncStatus},                      				 //显示状态
+    {"stop", "", cliFuncStop},                          				 //电机停止运行
+	  {"telemetry", "<Hz>", cliFuncTelemetry},           					 //自动显示电调状态(和控制无关)
+    {"version", "", cliFuncVer}                        	         //显示版本
 };
 
 #define CLI_N_CMDS (sizeof cliCommandTable / sizeof cliCommandTable[0])
@@ -105,7 +104,23 @@ static const char cliClearEOS[] = {0x1b, 0x5b, 0x4a, 0x00};
 static const char *stopError = "ESC must be stopped first\r\n";
 static const char *runError = "ESC not running\r\n";
 
-uint32_t FullRpm = 5000;
+void cliReadID(void *cmd, char *cmdLine) {
+		uint8_t ESC32_ID_NUM = p[ID];                  //电调ID
+	
+	  char ESC32_ID_CHAR[3];
+	  ESC32_ID_CHAR[0] = ESC32_ID_NUM + 0x30;
+	  ESC32_ID_CHAR[1] = '\r';
+		ESC32_ID_CHAR[2] = '\n';
+		serialPrint("ESC32_ID :");
+	  serialPrint(ESC32_ID_CHAR);
+	
+}
+
+void cliChangeID(void *cmd, char *cmdLine) {
+		char InputID = *cmdLine;
+		p[ID] = InputID - 0x30;
+}
+
 
 //命令提示.
 void cliUsage(cliCommand_t *cmd) {
@@ -167,7 +182,6 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 			LRC_L_C = LRC % 16 + '0';
 			if(LRC_L_C > '9') LRC_L_C = (LRC_L_C - '9' + 'a' - 1);
 			
-   
 			if((LRC_H_C != LRC_H_R)|| (LRC_L_C != LRC_L_R))
 				{
 					serialPrint("Jzs CheckDigit ERROR \r\n");
@@ -178,7 +192,6 @@ static void cliFuncGzs(void *cmd, char *cmdLine){
 			sprintf(tempBuf, "set to %d \r\n", ReadIn[ESC32_ID]);
 			serialPrint(tempBuf);
 	}
-
 }	
 //解析转速     jzs 0 123 0 
 static void cliFuncJzs(void *cmd, char *cmdLine){
